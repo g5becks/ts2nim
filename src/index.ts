@@ -1,4 +1,4 @@
-import { Node, Project, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
+import { ClassDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, TypeParameterDeclaration } from 'ts-morph'
 
 const proj = new Project({ tsConfigFilePath: './tsconfig.json' })
 
@@ -6,7 +6,7 @@ const file = proj.getSourceFiles()[0]
 
 const aliaser = file.getTypeAlias('')
 type DoneEvent = { message: 'Done' }
-type NodeVisitor = (node: Node) => string | undefined | DoneEvent
+type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
 
 const nimReserved = [
     'addr',
@@ -97,36 +97,60 @@ const isReservedWord = (word: string): boolean => nimReserved.includes(word)
 
 const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
 
-const typeAliasVisitor = (node: Node): string => {
+const typeParamVisitor = (node: Node | Node[]): string => {
+    const singleNode = node as TypeParameterDeclaration
+    let nodes: TypeParameterDeclaration[] = []
+    if (Array.isArray(node)) {
+        for (const n of node) {
+            nodes = nodes.concat(n as TypeParameterDeclaration)
+        }
+    }
+
+    return ''
+}
+const typeAliasVisitor = (node: Node | Node[]): string => {
     const alias = node as TypeAliasDeclaration
     const name = alias.getNameNode().getText().trim()
-    const typeName = isReservedWord(name) ? `js${capitalize(name)}` : name
+    const typeName = isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
     if (hasTypeParam(alias)) {
+        alias.getTypeParameters()
     }
+    return ''
 }
+
+const classVisitor = (node: Node | Node[]): string => {
+    const classs = node as ClassDeclaration
+    const className = classs.getNameNodeOrThrow()?.getText().trim()
+    const typeName = isReservedWord(className) ? `Js${capitalize(className)}` : capitalize(className)
+    if (hasTypeParam(classs)) {
+        classs.getTypeParameters()
+    }
+    return ''
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pass = (_node: Node) => undefined
+const pass = (_node: Node | Node[]) => undefined
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
-    [SyntaxKind.EndOfFileToken, (_node: Node): DoneEvent => ({ message: 'Done' })],
-    [SyntaxKind.SingleLineCommentTrivia, pass],
-    [SyntaxKind.MultiLineCommentTrivia, pass],
-    [SyntaxKind.NewLineTrivia, pass],
-    [SyntaxKind.WhitespaceTrivia, pass],
-    [SyntaxKind.ShebangTrivia, pass],
-    [SyntaxKind.ConflictMarkerTrivia, pass],
-    [SyntaxKind.NumericLiteral, pass],
-    [SyntaxKind.BigIntLiteral, pass],
-    [SyntaxKind.StringLiteral, pass],
-    [SyntaxKind.JsxText, pass],
-    [SyntaxKind.JsxTextAllWhiteSpaces, pass],
-    [SyntaxKind.RegularExpressionLiteral, pass],
-    [SyntaxKind.NoSubstitutionTemplateLiteral, pass],
-    [SyntaxKind.TemplateHead, pass],
-    [SyntaxKind.TemplateMiddle, pass],
-    [SyntaxKind.TemplateTail, pass],
+    [SyntaxKind.EndOfFileToken, (_node: Node | Node[]): DoneEvent => ({ message: 'Done' })],
+    [SyntaxKind.SingleLineCommentTrivia, pass], // pass
+    [SyntaxKind.MultiLineCommentTrivia, pass], // pass
+    [SyntaxKind.NewLineTrivia, pass], // pass
+    [SyntaxKind.WhitespaceTrivia, pass], // pass
+    [SyntaxKind.ShebangTrivia, pass], // pass
+    [SyntaxKind.ConflictMarkerTrivia, pass], // pass
+    [SyntaxKind.NumericLiteral, pass], // TODO check if this needs conversion
+    [SyntaxKind.BigIntLiteral, pass], // TODO check if this needs conversion
+    [SyntaxKind.StringLiteral, pass], // TODO check if this needs conversion
+    [SyntaxKind.JsxText, pass], // pass
+    [SyntaxKind.JsxTextAllWhiteSpaces, pass], // pass
+    [SyntaxKind.RegularExpressionLiteral, pass], // pass
+    [SyntaxKind.NoSubstitutionTemplateLiteral, pass], // pass
+    [SyntaxKind.TemplateHead, pass], // pass
+    [SyntaxKind.TemplateMiddle, pass], // pass
+    [SyntaxKind.TemplateTail, pass], // pass
     [SyntaxKind.OpenBraceToken, pass],
     [SyntaxKind.CloseBraceToken, pass],
     [SyntaxKind.OpenParenToken, pass],
@@ -267,7 +291,7 @@ const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.OfKeyword, pass],
     [SyntaxKind.QualifiedName, pass],
     [SyntaxKind.ComputedPropertyName, pass],
-    [SyntaxKind.TypeParameter, pass],
+    [SyntaxKind.TypeParameter, typeParamVisitor],
     [SyntaxKind.Parameter, pass],
     [SyntaxKind.Decorator, pass],
     [SyntaxKind.PropertySignature, pass],
@@ -360,7 +384,7 @@ const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.FunctionDeclaration, pass],
     [SyntaxKind.ClassDeclaration, pass],
     [SyntaxKind.InterfaceDeclaration, pass],
-    [SyntaxKind.TypeAliasDeclaration, pass],
+    [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor],
     [SyntaxKind.EnumDeclaration, pass],
     [SyntaxKind.ModuleDeclaration, pass],
     [SyntaxKind.ModuleBlock, pass],
