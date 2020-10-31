@@ -151,355 +151,355 @@ const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TemplateHead, pass], // pass
     [SyntaxKind.TemplateMiddle, pass], // pass
     [SyntaxKind.TemplateTail, pass], // pass
-    [SyntaxKind.OpenBraceToken, pass],
-    [SyntaxKind.CloseBraceToken, pass],
-    [SyntaxKind.OpenParenToken, pass],
-    [SyntaxKind.CloseParenToken, pass],
-    [SyntaxKind.OpenBracketToken, pass],
-    [SyntaxKind.CloseBracketToken, pass],
-    [SyntaxKind.DotToken, pass],
-    [SyntaxKind.DotDotDotToken, pass],
-    [SyntaxKind.SemicolonToken, pass],
-    [SyntaxKind.CommaToken, pass],
-    [SyntaxKind.QuestionDotToken, pass],
-    [SyntaxKind.LessThanToken, pass],
-    [SyntaxKind.LessThanSlashToken, pass],
-    [SyntaxKind.GreaterThanToken, pass],
-    [SyntaxKind.LessThanEqualsToken, pass],
-    [SyntaxKind.GreaterThanEqualsToken, pass],
-    [SyntaxKind.EqualsEqualsToken, pass],
-    [SyntaxKind.ExclamationEqualsToken, pass],
-    [SyntaxKind.EqualsEqualsEqualsToken, pass],
-    [SyntaxKind.ExclamationEqualsEqualsToken, pass],
-    [SyntaxKind.EqualsGreaterThanToken, pass],
-    [SyntaxKind.PlusToken, pass],
-    [SyntaxKind.MinusToken, pass],
-    [SyntaxKind.AsteriskToken, pass],
-    [SyntaxKind.AsteriskAsteriskToken, pass],
-    [SyntaxKind.SlashToken, pass],
-    [SyntaxKind.PercentToken, pass],
-    [SyntaxKind.PlusPlusToken, pass],
-    [SyntaxKind.MinusMinusToken, pass],
-    [SyntaxKind.LessThanLessThanToken, pass],
-    [SyntaxKind.GreaterThanGreaterThanToken, pass],
-    [SyntaxKind.GreaterThanGreaterThanGreaterThanToken, pass],
-    [SyntaxKind.AmpersandToken, pass],
-    [SyntaxKind.BarToken, pass],
-    [SyntaxKind.CaretToken, pass],
-    [SyntaxKind.ExclamationToken, pass],
-    [SyntaxKind.TildeToken, pass],
-    [SyntaxKind.AmpersandAmpersandToken, pass],
-    [SyntaxKind.BarBarToken, pass],
-    [SyntaxKind.QuestionToken, pass],
-    [SyntaxKind.ColonToken, pass],
-    [SyntaxKind.AtToken, pass],
-    [SyntaxKind.QuestionQuestionToken, pass],
-    [SyntaxKind.BacktickToken, pass],
-    [SyntaxKind.EqualsToken, pass],
-    [SyntaxKind.PlusEqualsToken, pass],
-    [SyntaxKind.MinusEqualsToken, pass],
-    [SyntaxKind.AsteriskEqualsToken, pass],
-    [SyntaxKind.AsteriskAsteriskEqualsToken, pass],
-    [SyntaxKind.SlashEqualsToken, pass],
-    [SyntaxKind.PercentEqualsToken, pass],
-    [SyntaxKind.LessThanLessThanEqualsToken, pass],
-    [SyntaxKind.GreaterThanGreaterThanEqualsToken, pass],
-    [SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken, pass],
-    [SyntaxKind.AmpersandEqualsToken, pass],
-    [SyntaxKind.BarEqualsToken, pass],
-    [SyntaxKind.BarBarEqualsToken, pass],
-    [SyntaxKind.AmpersandAmpersandEqualsToken, pass],
-    [SyntaxKind.QuestionQuestionEqualsToken, pass],
-    [SyntaxKind.CaretEqualsToken, pass],
-    [SyntaxKind.Identifier, pass],
-    [SyntaxKind.PrivateIdentifier, pass],
-    [SyntaxKind.BreakKeyword, pass],
-    [SyntaxKind.CaseKeyword, pass],
-    [SyntaxKind.CatchKeyword, pass],
-    [SyntaxKind.ClassKeyword, pass],
-    [SyntaxKind.ConstKeyword, pass],
-    [SyntaxKind.ContinueKeyword, pass],
-    [SyntaxKind.DebuggerKeyword, pass],
-    [SyntaxKind.DefaultKeyword, pass],
-    [SyntaxKind.DeleteKeyword, pass],
-    [SyntaxKind.DoKeyword, pass],
-    [SyntaxKind.ElseKeyword, pass],
-    [SyntaxKind.EnumKeyword, pass],
-    [SyntaxKind.ExportKeyword, pass],
-    [SyntaxKind.ExtendsKeyword, pass],
-    [SyntaxKind.FalseKeyword, pass],
-    [SyntaxKind.FinallyKeyword, pass],
-    [SyntaxKind.ForKeyword, pass],
-    [SyntaxKind.FunctionKeyword, pass],
-    [SyntaxKind.IfKeyword, pass],
-    [SyntaxKind.ImportKeyword, pass],
-    [SyntaxKind.InKeyword, pass],
-    [SyntaxKind.InstanceOfKeyword, pass],
-    [SyntaxKind.NewKeyword, pass],
-    [SyntaxKind.NullKeyword, pass],
-    [SyntaxKind.ReturnKeyword, pass],
-    [SyntaxKind.SuperKeyword, pass],
-    [SyntaxKind.SwitchKeyword, pass],
-    [SyntaxKind.ThisKeyword, pass],
-    [SyntaxKind.ThrowKeyword, pass],
-    [SyntaxKind.TrueKeyword, pass],
-    [SyntaxKind.TryKeyword, pass],
-    [SyntaxKind.TypeOfKeyword, pass],
-    [SyntaxKind.VarKeyword, pass],
-    [SyntaxKind.VoidKeyword, pass],
-    [SyntaxKind.WhileKeyword, pass],
-    [SyntaxKind.WithKeyword, pass],
-    [SyntaxKind.ImplementsKeyword, pass],
-    [SyntaxKind.InterfaceKeyword, pass],
-    [SyntaxKind.LetKeyword, pass],
-    [SyntaxKind.PackageKeyword, pass],
-    [SyntaxKind.PrivateKeyword, pass],
-    [SyntaxKind.ProtectedKeyword, pass],
-    [SyntaxKind.PublicKeyword, pass],
-    [SyntaxKind.StaticKeyword, pass],
-    [SyntaxKind.YieldKeyword, pass],
-    [SyntaxKind.AbstractKeyword, pass],
-    [SyntaxKind.AsKeyword, pass],
-    [SyntaxKind.AssertsKeyword, pass],
-    [SyntaxKind.AnyKeyword, pass],
-    [SyntaxKind.AsyncKeyword, pass],
-    [SyntaxKind.AwaitKeyword, pass],
-    [SyntaxKind.BooleanKeyword, pass],
-    [SyntaxKind.ConstructorKeyword, pass],
-    [SyntaxKind.DeclareKeyword, pass],
-    [SyntaxKind.GetKeyword, pass],
-    [SyntaxKind.InferKeyword, pass],
-    [SyntaxKind.IsKeyword, pass],
-    [SyntaxKind.KeyOfKeyword, pass],
-    [SyntaxKind.ModuleKeyword, pass],
-    [SyntaxKind.NamespaceKeyword, pass],
-    [SyntaxKind.NeverKeyword, pass],
-    [SyntaxKind.ReadonlyKeyword, pass],
-    [SyntaxKind.RequireKeyword, pass],
-    [SyntaxKind.NumberKeyword, pass],
-    [SyntaxKind.ObjectKeyword, pass],
-    [SyntaxKind.SetKeyword, pass],
-    [SyntaxKind.StringKeyword, pass],
-    [SyntaxKind.SymbolKeyword, pass],
-    [SyntaxKind.TypeKeyword, pass],
-    [SyntaxKind.UndefinedKeyword, pass],
-    [SyntaxKind.UniqueKeyword, pass],
-    [SyntaxKind.UnknownKeyword, pass],
-    [SyntaxKind.FromKeyword, pass],
-    [SyntaxKind.GlobalKeyword, pass],
-    [SyntaxKind.BigIntKeyword, pass],
-    [SyntaxKind.OfKeyword, pass],
-    [SyntaxKind.QualifiedName, pass],
-    [SyntaxKind.ComputedPropertyName, pass],
-    [SyntaxKind.TypeParameter, typeParamVisitor],
-    [SyntaxKind.Parameter, pass],
-    [SyntaxKind.Decorator, pass],
-    [SyntaxKind.PropertySignature, pass],
-    [SyntaxKind.PropertyDeclaration, pass],
-    [SyntaxKind.MethodSignature, pass],
-    [SyntaxKind.MethodDeclaration, pass],
-    [SyntaxKind.Constructor, pass],
-    [SyntaxKind.GetAccessor, pass],
-    [SyntaxKind.SetAccessor, pass],
-    [SyntaxKind.CallSignature, pass],
-    [SyntaxKind.ConstructSignature, pass],
-    [SyntaxKind.IndexSignature, pass],
-    [SyntaxKind.TypePredicate, pass],
-    [SyntaxKind.TypeReference, pass],
-    [SyntaxKind.FunctionType, pass],
-    [SyntaxKind.ConstructorType, pass],
-    [SyntaxKind.TypeQuery, pass],
-    [SyntaxKind.TypeLiteral, pass],
-    [SyntaxKind.ArrayType, pass],
-    [SyntaxKind.TupleType, pass],
-    [SyntaxKind.OptionalType, pass],
-    [SyntaxKind.RestType, pass],
-    [SyntaxKind.UnionType, pass],
-    [SyntaxKind.IntersectionType, pass],
-    [SyntaxKind.ConditionalType, pass],
-    [SyntaxKind.InferType, pass],
-    [SyntaxKind.ParenthesizedType, pass],
-    [SyntaxKind.ThisType, pass],
-    [SyntaxKind.TypeOperator, pass],
-    [SyntaxKind.IndexedAccessType, pass],
-    [SyntaxKind.MappedType, pass],
-    [SyntaxKind.LiteralType, pass],
-    [SyntaxKind.NamedTupleMember, pass],
-    [SyntaxKind.ImportType, pass],
-    [SyntaxKind.ObjectBindingPattern, pass],
-    [SyntaxKind.ArrayBindingPattern, pass],
-    [SyntaxKind.BindingElement, pass],
-    [SyntaxKind.ArrayLiteralExpression, pass],
-    [SyntaxKind.ObjectLiteralExpression, pass],
-    [SyntaxKind.PropertyAccessExpression, pass],
-    [SyntaxKind.ElementAccessExpression, pass],
-    [SyntaxKind.CallExpression, pass],
-    [SyntaxKind.NewExpression, pass],
-    [SyntaxKind.TaggedTemplateExpression, pass],
-    [SyntaxKind.TypeAssertionExpression, pass],
-    [SyntaxKind.ParenthesizedExpression, pass],
-    [SyntaxKind.FunctionExpression, pass],
-    [SyntaxKind.ArrowFunction, pass],
-    [SyntaxKind.DeleteExpression, pass],
-    [SyntaxKind.TypeOfExpression, pass],
-    [SyntaxKind.VoidExpression, pass],
-    [SyntaxKind.AwaitExpression, pass],
-    [SyntaxKind.PrefixUnaryExpression, pass],
-    [SyntaxKind.PostfixUnaryExpression, pass],
-    [SyntaxKind.BinaryExpression, pass],
-    [SyntaxKind.ConditionalExpression, pass],
-    [SyntaxKind.TemplateExpression, pass],
-    [SyntaxKind.YieldExpression, pass],
-    [SyntaxKind.SpreadElement, pass],
-    [SyntaxKind.ClassExpression, pass],
-    [SyntaxKind.OmittedExpression, pass],
-    [SyntaxKind.ExpressionWithTypeArguments, pass],
-    [SyntaxKind.AsExpression, pass],
-    [SyntaxKind.NonNullExpression, pass],
-    [SyntaxKind.MetaProperty, pass],
-    [SyntaxKind.SyntheticExpression, pass],
-    [SyntaxKind.TemplateSpan, pass],
-    [SyntaxKind.SemicolonClassElement, pass],
-    [SyntaxKind.Block, pass],
-    [SyntaxKind.EmptyStatement, pass],
-    [SyntaxKind.VariableStatement, pass],
-    [SyntaxKind.ExpressionStatement, pass],
-    [SyntaxKind.IfStatement, pass],
-    [SyntaxKind.DoStatement, pass],
-    [SyntaxKind.WhileStatement, pass],
-    [SyntaxKind.ForStatement, pass],
-    [SyntaxKind.ForInStatement, pass],
-    [SyntaxKind.ForOfStatement, pass],
-    [SyntaxKind.ContinueStatement, pass],
-    [SyntaxKind.BreakStatement, pass],
-    [SyntaxKind.ReturnStatement, pass],
-    [SyntaxKind.WithStatement, pass],
-    [SyntaxKind.SwitchStatement, pass],
-    [SyntaxKind.LabeledStatement, pass],
-    [SyntaxKind.ThrowStatement, pass],
-    [SyntaxKind.TryStatement, pass],
-    [SyntaxKind.DebuggerStatement, pass],
-    [SyntaxKind.VariableDeclaration, pass],
-    [SyntaxKind.VariableDeclarationList, pass],
-    [SyntaxKind.FunctionDeclaration, pass],
-    [SyntaxKind.ClassDeclaration, pass],
-    [SyntaxKind.InterfaceDeclaration, pass],
-    [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor],
-    [SyntaxKind.EnumDeclaration, pass],
-    [SyntaxKind.ModuleDeclaration, pass],
-    [SyntaxKind.ModuleBlock, pass],
-    [SyntaxKind.CaseBlock, pass],
-    [SyntaxKind.NamespaceExportDeclaration, pass],
-    [SyntaxKind.ImportEqualsDeclaration, pass],
-    [SyntaxKind.ImportDeclaration, pass],
-    [SyntaxKind.ImportClause, pass],
-    [SyntaxKind.NamespaceImport, pass],
-    [SyntaxKind.NamedImports, pass],
-    [SyntaxKind.ImportSpecifier, pass],
-    [SyntaxKind.ExportAssignment, pass],
-    [SyntaxKind.ExportDeclaration, pass],
-    [SyntaxKind.NamedExports, pass],
-    [SyntaxKind.NamespaceExport, pass],
-    [SyntaxKind.ExportSpecifier, pass],
-    [SyntaxKind.MissingDeclaration, pass],
-    [SyntaxKind.ExternalModuleReference, pass],
-    [SyntaxKind.JsxElement, pass],
-    [SyntaxKind.JsxSelfClosingElement, pass],
-    [SyntaxKind.JsxOpeningElement, pass],
-    [SyntaxKind.JsxClosingElement, pass],
-    [SyntaxKind.JsxFragment, pass],
-    [SyntaxKind.JsxOpeningFragment, pass],
-    [SyntaxKind.JsxClosingFragment, pass],
-    [SyntaxKind.JsxAttribute, pass],
-    [SyntaxKind.JsxAttributes, pass],
-    [SyntaxKind.JsxSpreadAttribute, pass],
-    [SyntaxKind.JsxExpression, pass],
-    [SyntaxKind.CaseClause, pass],
-    [SyntaxKind.DefaultClause, pass],
-    [SyntaxKind.HeritageClause, pass],
-    [SyntaxKind.CatchClause, pass],
-    [SyntaxKind.PropertyAssignment, pass],
-    [SyntaxKind.ShorthandPropertyAssignment, pass],
-    [SyntaxKind.SpreadAssignment, pass],
-    [SyntaxKind.EnumMember, pass],
-    [SyntaxKind.UnparsedPrologue, pass],
-    [SyntaxKind.UnparsedPrepend, pass],
-    [SyntaxKind.UnparsedText, pass],
-    [SyntaxKind.UnparsedInternalText, pass],
-    [SyntaxKind.UnparsedSyntheticReference, pass],
-    [SyntaxKind.SourceFile, pass],
-    [SyntaxKind.Bundle, pass],
-    [SyntaxKind.UnparsedSource, pass],
-    [SyntaxKind.InputFiles, pass],
-    [SyntaxKind.JSDocTypeExpression, pass],
-    [SyntaxKind.JSDocAllType, pass],
-    [SyntaxKind.JSDocUnknownType, pass],
-    [SyntaxKind.JSDocNullableType, pass],
-    [SyntaxKind.JSDocNonNullableType, pass],
-    [SyntaxKind.JSDocOptionalType, pass],
-    [SyntaxKind.JSDocFunctionType, pass],
-    [SyntaxKind.JSDocVariadicType, pass],
-    [SyntaxKind.JSDocNamepathType, pass],
-    [SyntaxKind.JSDocComment, pass],
-    [SyntaxKind.JSDocTypeLiteral, pass],
-    [SyntaxKind.JSDocSignature, pass],
-    [SyntaxKind.JSDocTag, pass],
-    [SyntaxKind.JSDocAugmentsTag, pass],
-    [SyntaxKind.JSDocImplementsTag, pass],
-    [SyntaxKind.JSDocAuthorTag, pass],
-    [SyntaxKind.JSDocDeprecatedTag, pass],
-    [SyntaxKind.JSDocClassTag, pass],
-    [SyntaxKind.JSDocPublicTag, pass],
-    [SyntaxKind.JSDocPrivateTag, pass],
-    [SyntaxKind.JSDocProtectedTag, pass],
-    [SyntaxKind.JSDocReadonlyTag, pass],
-    [SyntaxKind.JSDocCallbackTag, pass],
-    [SyntaxKind.JSDocEnumTag, pass],
-    [SyntaxKind.JSDocParameterTag, pass],
-    [SyntaxKind.JSDocReturnTag, pass],
-    [SyntaxKind.JSDocThisTag, pass],
-    [SyntaxKind.JSDocTypeTag, pass],
-    [SyntaxKind.JSDocTemplateTag, pass],
-    [SyntaxKind.JSDocTypedefTag, pass],
-    [SyntaxKind.JSDocPropertyTag, pass],
-    [SyntaxKind.SyntaxList, pass],
-    [SyntaxKind.NotEmittedStatement, pass],
-    [SyntaxKind.PartiallyEmittedExpression, pass],
-    [SyntaxKind.CommaListExpression, pass],
-    [SyntaxKind.MergeDeclarationMarker, pass],
-    [SyntaxKind.EndOfDeclarationMarker, pass],
-    [SyntaxKind.SyntheticReferenceExpression, pass],
-    [SyntaxKind.Count, pass],
-    [SyntaxKind.FirstAssignment, pass],
-    [SyntaxKind.LastAssignment, pass],
-    [SyntaxKind.FirstCompoundAssignment, pass],
-    [SyntaxKind.LastCompoundAssignment, pass],
-    [SyntaxKind.FirstReservedWord, pass],
-    [SyntaxKind.LastReservedWord, pass],
-    [SyntaxKind.FirstKeyword, pass],
-    [SyntaxKind.LastKeyword, pass],
-    [SyntaxKind.FirstFutureReservedWord, pass],
-    [SyntaxKind.LastFutureReservedWord, pass],
-    [SyntaxKind.FirstTypeNode, pass],
-    [SyntaxKind.LastTypeNode, pass],
-    [SyntaxKind.FirstPunctuation, pass],
-    [SyntaxKind.LastPunctuation, pass],
-    [SyntaxKind.FirstToken, pass],
-    [SyntaxKind.LastToken, pass],
-    [SyntaxKind.FirstTriviaToken, pass],
-    [SyntaxKind.LastTriviaToken, pass],
-    [SyntaxKind.FirstLiteralToken, pass],
-    [SyntaxKind.LastLiteralToken, pass],
-    [SyntaxKind.FirstTemplateToken, pass],
-    [SyntaxKind.LastTemplateToken, pass],
-    [SyntaxKind.FirstBinaryOperator, pass],
-    [SyntaxKind.LastBinaryOperator, pass],
-    [SyntaxKind.FirstStatement, pass],
-    [SyntaxKind.LastStatement, pass],
-    [SyntaxKind.FirstNode, pass],
-    [SyntaxKind.FirstJSDocNode, pass],
-    [SyntaxKind.LastJSDocNode, pass],
-    [SyntaxKind.FirstJSDocTagNode, pass],
-    [SyntaxKind.LastJSDocTagNode, pass],
+    [SyntaxKind.OpenBraceToken, pass], // pass
+    [SyntaxKind.CloseBraceToken, pass], // pass
+    [SyntaxKind.OpenParenToken, pass], // pass
+    [SyntaxKind.CloseParenToken, pass], // pass
+    [SyntaxKind.OpenBracketToken, pass], // pass
+    [SyntaxKind.CloseBracketToken, pass], // pass
+    [SyntaxKind.DotToken, pass], // pass
+    [SyntaxKind.DotDotDotToken, pass], // pass
+    [SyntaxKind.SemicolonToken, pass], // pass
+    [SyntaxKind.CommaToken, pass], // pass
+    [SyntaxKind.QuestionDotToken, pass], // pass
+    [SyntaxKind.LessThanToken, pass], // pass
+    [SyntaxKind.LessThanSlashToken, pass], // pass
+    [SyntaxKind.GreaterThanToken, pass], // pass
+    [SyntaxKind.LessThanEqualsToken, pass], // pass
+    [SyntaxKind.GreaterThanEqualsToken, pass], // pass
+    [SyntaxKind.EqualsEqualsToken, pass], // pass
+    [SyntaxKind.ExclamationEqualsToken, pass], // pass
+    [SyntaxKind.EqualsEqualsEqualsToken, pass], // pass
+    [SyntaxKind.ExclamationEqualsEqualsToken, pass], // pass
+    [SyntaxKind.EqualsGreaterThanToken, pass], // pass
+    [SyntaxKind.PlusToken, pass], // pass
+    [SyntaxKind.MinusToken, pass], // pass
+    [SyntaxKind.AsteriskToken, pass], // pass
+    [SyntaxKind.AsteriskAsteriskToken, pass], // pass
+    [SyntaxKind.SlashToken, pass], // pass
+    [SyntaxKind.PercentToken, pass], // pass
+    [SyntaxKind.PlusPlusToken, pass], // pass
+    [SyntaxKind.MinusMinusToken, pass], // pass
+    [SyntaxKind.LessThanLessThanToken, pass], // pass
+    [SyntaxKind.GreaterThanGreaterThanToken, pass], // pass
+    [SyntaxKind.GreaterThanGreaterThanGreaterThanToken, pass], // pass
+    [SyntaxKind.AmpersandToken, pass], // pass
+    [SyntaxKind.BarToken, pass], // pass
+    [SyntaxKind.CaretToken, pass], // pass
+    [SyntaxKind.ExclamationToken, pass], // pass
+    [SyntaxKind.TildeToken, pass], // pass
+    [SyntaxKind.AmpersandAmpersandToken, pass], // pass
+    [SyntaxKind.BarBarToken, pass], // pass
+    [SyntaxKind.QuestionToken, pass], // pass
+    [SyntaxKind.ColonToken, pass], // pass
+    [SyntaxKind.AtToken, pass], // pass
+    [SyntaxKind.QuestionQuestionToken, pass], // pass
+    [SyntaxKind.BacktickToken, pass], // pass
+    [SyntaxKind.EqualsToken, pass], // pass
+    [SyntaxKind.PlusEqualsToken, pass], // pass
+    [SyntaxKind.MinusEqualsToken, pass], // pass
+    [SyntaxKind.AsteriskEqualsToken, pass], // pass
+    [SyntaxKind.AsteriskAsteriskEqualsToken, pass], // pass
+    [SyntaxKind.SlashEqualsToken, pass], // pass
+    [SyntaxKind.PercentEqualsToken, pass], // pass
+    [SyntaxKind.LessThanLessThanEqualsToken, pass], // pass
+    [SyntaxKind.GreaterThanGreaterThanEqualsToken, pass], // pass
+    [SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken, pass], // pass
+    [SyntaxKind.AmpersandEqualsToken, pass], // pass
+    [SyntaxKind.BarEqualsToken, pass], // pass
+    [SyntaxKind.BarBarEqualsToken, pass], // pass
+    [SyntaxKind.AmpersandAmpersandEqualsToken, pass], // pass
+    [SyntaxKind.QuestionQuestionEqualsToken, pass], // pass
+    [SyntaxKind.CaretEqualsToken, pass], // pass
+    [SyntaxKind.Identifier, pass], // pass
+    [SyntaxKind.PrivateIdentifier, pass], // pass
+    [SyntaxKind.BreakKeyword, pass], // pass
+    [SyntaxKind.CaseKeyword, pass], // pass
+    [SyntaxKind.CatchKeyword, pass], // pass
+    [SyntaxKind.ClassKeyword, pass], // pass
+    [SyntaxKind.ConstKeyword, pass], // pass
+    [SyntaxKind.ContinueKeyword, pass], // pass
+    [SyntaxKind.DebuggerKeyword, pass], // pass
+    [SyntaxKind.DefaultKeyword, pass], // pass
+    [SyntaxKind.DeleteKeyword, pass], // pass
+    [SyntaxKind.DoKeyword, pass], // pass
+    [SyntaxKind.ElseKeyword, pass], // pass
+    [SyntaxKind.EnumKeyword, pass], // pass
+    [SyntaxKind.ExportKeyword, pass], // pass
+    [SyntaxKind.ExtendsKeyword, pass], // pass
+    [SyntaxKind.FalseKeyword, pass], // pass
+    [SyntaxKind.FinallyKeyword, pass], // pass
+    [SyntaxKind.ForKeyword, pass], // pass
+    [SyntaxKind.FunctionKeyword, pass], // pass
+    [SyntaxKind.IfKeyword, pass], // pass
+    [SyntaxKind.ImportKeyword, pass], // pass
+    [SyntaxKind.InKeyword, pass], // pass
+    [SyntaxKind.InstanceOfKeyword, pass], // pass
+    [SyntaxKind.NewKeyword, pass], // pass
+    [SyntaxKind.NullKeyword, pass], // pass
+    [SyntaxKind.ReturnKeyword, pass], // pass
+    [SyntaxKind.SuperKeyword, pass], // pass
+    [SyntaxKind.SwitchKeyword, pass], // pass
+    [SyntaxKind.ThisKeyword, pass], // pass
+    [SyntaxKind.ThrowKeyword, pass], // pass
+    [SyntaxKind.TrueKeyword, pass], // pass
+    [SyntaxKind.TryKeyword, pass], // pass
+    [SyntaxKind.TypeOfKeyword, pass], // pass
+    [SyntaxKind.VarKeyword, pass], // pass
+    [SyntaxKind.VoidKeyword, pass], // pass
+    [SyntaxKind.WhileKeyword, pass], // pass
+    [SyntaxKind.WithKeyword, pass], // pass
+    [SyntaxKind.ImplementsKeyword, pass], // pass
+    [SyntaxKind.InterfaceKeyword, pass], // pass
+    [SyntaxKind.LetKeyword, pass], // pass
+    [SyntaxKind.PackageKeyword, pass], // pass
+    [SyntaxKind.PrivateKeyword, pass], // pass
+    [SyntaxKind.ProtectedKeyword, pass], // pass
+    [SyntaxKind.PublicKeyword, pass], // pass
+    [SyntaxKind.StaticKeyword, pass], // pass
+    [SyntaxKind.YieldKeyword, pass], // pass
+    [SyntaxKind.AbstractKeyword, pass], // pass
+    [SyntaxKind.AsKeyword, pass], // pass
+    [SyntaxKind.AssertsKeyword, pass], // pass
+    [SyntaxKind.AnyKeyword, pass], // pass
+    [SyntaxKind.AsyncKeyword, pass], // pass
+    [SyntaxKind.AwaitKeyword, pass], // pass
+    [SyntaxKind.BooleanKeyword, pass], // pass
+    [SyntaxKind.ConstructorKeyword, pass], // pass
+    [SyntaxKind.DeclareKeyword, pass], // pass
+    [SyntaxKind.GetKeyword, pass], // pass
+    [SyntaxKind.InferKeyword, pass], // pass
+    [SyntaxKind.IsKeyword, pass], // pass
+    [SyntaxKind.KeyOfKeyword, pass], // pass
+    [SyntaxKind.ModuleKeyword, pass], // pass
+    [SyntaxKind.NamespaceKeyword, pass], // pass
+    [SyntaxKind.NeverKeyword, pass], // pass
+    [SyntaxKind.ReadonlyKeyword, pass], // pass
+    [SyntaxKind.RequireKeyword, pass], // pass
+    [SyntaxKind.NumberKeyword, pass], // pass
+    [SyntaxKind.ObjectKeyword, pass], // pass
+    [SyntaxKind.SetKeyword, pass], // pass
+    [SyntaxKind.StringKeyword, pass], // pass
+    [SyntaxKind.SymbolKeyword, pass], // pass
+    [SyntaxKind.TypeKeyword, pass], // pass
+    [SyntaxKind.UndefinedKeyword, pass], // pass
+    [SyntaxKind.UniqueKeyword, pass], // pass
+    [SyntaxKind.UnknownKeyword, pass], // pass
+    [SyntaxKind.FromKeyword, pass], // pass
+    [SyntaxKind.GlobalKeyword, pass], // pass
+    [SyntaxKind.BigIntKeyword, pass], // pass
+    [SyntaxKind.OfKeyword, pass], // pass
+    [SyntaxKind.QualifiedName, pass], // pass
+    [SyntaxKind.ComputedPropertyName, pass], // pass
+    [SyntaxKind.TypeParameter, typeParamVisitor], // pass
+    [SyntaxKind.Parameter, pass], // pass
+    [SyntaxKind.Decorator, pass], // pass
+    [SyntaxKind.PropertySignature, pass], // TODO create visitor
+    [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
+    [SyntaxKind.MethodSignature, pass], // TODO create visitor
+    [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
+    [SyntaxKind.Constructor, pass], // TODO create visitor
+    [SyntaxKind.GetAccessor, pass], // TODO create visitor
+    [SyntaxKind.SetAccessor, pass], // TODO create visitor
+    [SyntaxKind.CallSignature, pass], // TODO create visitor
+    [SyntaxKind.ConstructSignature, pass], // TODO create visitor
+    [SyntaxKind.IndexSignature, pass], // TODO create visitor
+    [SyntaxKind.TypePredicate, pass], // TODO create visitor
+    [SyntaxKind.TypeReference, pass], // TODO create visitor
+    [SyntaxKind.FunctionType, pass], // TODO create visitor
+    [SyntaxKind.ConstructorType, pass], // TODO create visitor
+    [SyntaxKind.TypeQuery, pass], // TODO create visitor
+    [SyntaxKind.TypeLiteral, pass], // TODO create visitor
+    [SyntaxKind.ArrayType, pass], // TODO create visitor
+    [SyntaxKind.TupleType, pass], // TODO create visitor
+    [SyntaxKind.OptionalType, pass], // TODO create visitor
+    [SyntaxKind.RestType, pass], // TODO create visitor
+    [SyntaxKind.UnionType, pass], // TODO create visitor
+    [SyntaxKind.IntersectionType, pass], // TODO create visitor
+    [SyntaxKind.ConditionalType, pass], // TODO create visitor
+    [SyntaxKind.InferType, pass], // TODO create visitor
+    [SyntaxKind.ParenthesizedType, pass], // TODO create visitor
+    [SyntaxKind.ThisType, pass], // TODO create visitor
+    [SyntaxKind.TypeOperator, pass], // TODO create visitor
+    [SyntaxKind.IndexedAccessType, pass], // TODO create visitor
+    [SyntaxKind.MappedType, pass], // TODO create visitor
+    [SyntaxKind.LiteralType, pass], // TODO create visitor
+    [SyntaxKind.NamedTupleMember, pass], // TODO create visitor
+    [SyntaxKind.ImportType, pass], // TODO create visitor
+    [SyntaxKind.ObjectBindingPattern, pass], // TODO create visitor
+    [SyntaxKind.ArrayBindingPattern, pass], // TODO create visitor
+    [SyntaxKind.BindingElement, pass], // TODO create visitor
+    [SyntaxKind.ArrayLiteralExpression, pass], // pass
+    [SyntaxKind.ObjectLiteralExpression, pass], // pass
+    [SyntaxKind.PropertyAccessExpression, pass], // pass
+    [SyntaxKind.ElementAccessExpression, pass], // pass
+    [SyntaxKind.CallExpression, pass], // pass
+    [SyntaxKind.NewExpression, pass], // pass
+    [SyntaxKind.TaggedTemplateExpression, pass], // pass
+    [SyntaxKind.TypeAssertionExpression, pass], // pass
+    [SyntaxKind.ParenthesizedExpression, pass], // pass
+    [SyntaxKind.FunctionExpression, pass], // pass
+    [SyntaxKind.ArrowFunction, pass], // pass
+    [SyntaxKind.DeleteExpression, pass], // pass
+    [SyntaxKind.TypeOfExpression, pass], // pass
+    [SyntaxKind.VoidExpression, pass], // pass
+    [SyntaxKind.AwaitExpression, pass], // pass
+    [SyntaxKind.PrefixUnaryExpression, pass], // pass
+    [SyntaxKind.PostfixUnaryExpression, pass], // pass
+    [SyntaxKind.BinaryExpression, pass], // pass
+    [SyntaxKind.ConditionalExpression, pass], // pass
+    [SyntaxKind.TemplateExpression, pass], // pass
+    [SyntaxKind.YieldExpression, pass], // pass
+    [SyntaxKind.SpreadElement, pass], // pass
+    [SyntaxKind.ClassExpression, pass], // pass
+    [SyntaxKind.OmittedExpression, pass], // pass
+    [SyntaxKind.ExpressionWithTypeArguments, pass], // pass
+    [SyntaxKind.AsExpression, pass], // pass
+    [SyntaxKind.NonNullExpression, pass], // pass
+    [SyntaxKind.MetaProperty, pass], // pass
+    [SyntaxKind.SyntheticExpression, pass], // pass
+    [SyntaxKind.TemplateSpan, pass], // pass
+    [SyntaxKind.SemicolonClassElement, pass], // pass
+    [SyntaxKind.Block, pass], // pass
+    [SyntaxKind.EmptyStatement, pass], // pass
+    [SyntaxKind.VariableStatement, pass], // TODO create visitor
+    [SyntaxKind.ExpressionStatement, pass], // pass
+    [SyntaxKind.IfStatement, pass], // pass
+    [SyntaxKind.DoStatement, pass], // pass
+    [SyntaxKind.WhileStatement, pass], // pass
+    [SyntaxKind.ForStatement, pass], // pass
+    [SyntaxKind.ForInStatement, pass], // pass
+    [SyntaxKind.ForOfStatement, pass], // pass
+    [SyntaxKind.ContinueStatement, pass], // pass
+    [SyntaxKind.BreakStatement, pass], // pass
+    [SyntaxKind.ReturnStatement, pass], // pass
+    [SyntaxKind.WithStatement, pass], // pass
+    [SyntaxKind.SwitchStatement, pass], // pass
+    [SyntaxKind.LabeledStatement, pass], // pass
+    [SyntaxKind.ThrowStatement, pass], // pass
+    [SyntaxKind.TryStatement, pass], // pass
+    [SyntaxKind.DebuggerStatement, pass], // pass
+    [SyntaxKind.VariableDeclaration, pass], // pass
+    [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
+    [SyntaxKind.FunctionDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ClassDeclaration, pass], // TODO create visitor
+    [SyntaxKind.InterfaceDeclaration, pass], // TODO create visitor
+    [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor], // TODO create visitor
+    [SyntaxKind.EnumDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ModuleDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ModuleBlock, pass], // TODO create visitor
+    [SyntaxKind.CaseBlock, pass], // pass
+    [SyntaxKind.NamespaceExportDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ImportEqualsDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ImportDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ImportClause, pass], // TODO create visitor
+    [SyntaxKind.NamespaceImport, pass], // TODO create visitor
+    [SyntaxKind.NamedImports, pass], // TODO create visitor
+    [SyntaxKind.ImportSpecifier, pass], // TODO create visitor
+    [SyntaxKind.ExportAssignment, pass], // TODO create visitor
+    [SyntaxKind.ExportDeclaration, pass], // TODO create visitor
+    [SyntaxKind.NamedExports, pass], // TODO create visitor
+    [SyntaxKind.NamespaceExport, pass], // TODO create visitor
+    [SyntaxKind.ExportSpecifier, pass], // pass
+    [SyntaxKind.MissingDeclaration, pass], // pass
+    [SyntaxKind.ExternalModuleReference, pass], // pass
+    [SyntaxKind.JsxElement, pass], // pass
+    [SyntaxKind.JsxSelfClosingElement, pass], // pass
+    [SyntaxKind.JsxOpeningElement, pass], // pass
+    [SyntaxKind.JsxClosingElement, pass], // pass
+    [SyntaxKind.JsxFragment, pass], // pass
+    [SyntaxKind.JsxOpeningFragment, pass], // pass
+    [SyntaxKind.JsxClosingFragment, pass], // pass
+    [SyntaxKind.JsxAttribute, pass], // pass
+    [SyntaxKind.JsxAttributes, pass], // pass
+    [SyntaxKind.JsxSpreadAttribute, pass], // pass
+    [SyntaxKind.JsxExpression, pass], // pass
+    [SyntaxKind.CaseClause, pass], // pass
+    [SyntaxKind.DefaultClause, pass], // pass
+    [SyntaxKind.HeritageClause, pass], // pass
+    [SyntaxKind.CatchClause, pass], // pass
+    [SyntaxKind.PropertyAssignment, pass], // pass
+    [SyntaxKind.ShorthandPropertyAssignment, pass], // pass
+    [SyntaxKind.SpreadAssignment, pass], // pass
+    [SyntaxKind.EnumMember, pass], // pass
+    [SyntaxKind.UnparsedPrologue, pass], // pass
+    [SyntaxKind.UnparsedPrepend, pass], // pass
+    [SyntaxKind.UnparsedText, pass], // pass
+    [SyntaxKind.UnparsedInternalText, pass], // pass
+    [SyntaxKind.UnparsedSyntheticReference, pass], // pass
+    [SyntaxKind.SourceFile, pass], // pass
+    [SyntaxKind.Bundle, pass], // pass
+    [SyntaxKind.UnparsedSource, pass], // pass
+    [SyntaxKind.InputFiles, pass], // pass
+    [SyntaxKind.JSDocTypeExpression, pass], // TODO create visitor
+    [SyntaxKind.JSDocAllType, pass], // TODO create visitor
+    [SyntaxKind.JSDocUnknownType, pass], // TODO create visitor
+    [SyntaxKind.JSDocNullableType, pass], // TODO create visitor
+    [SyntaxKind.JSDocNonNullableType, pass], // TODO create visitor
+    [SyntaxKind.JSDocOptionalType, pass], // TODO create visitor
+    [SyntaxKind.JSDocFunctionType, pass], // TODO create visitor
+    [SyntaxKind.JSDocVariadicType, pass], // TODO create visitor
+    [SyntaxKind.JSDocNamepathType, pass], // TODO create visitor
+    [SyntaxKind.JSDocComment, pass], // TODO create visitor
+    [SyntaxKind.JSDocTypeLiteral, pass], // TODO create visitor
+    [SyntaxKind.JSDocSignature, pass], // TODO create visitor
+    [SyntaxKind.JSDocTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocAugmentsTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocImplementsTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocAuthorTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocDeprecatedTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocClassTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocPublicTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocPrivateTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocProtectedTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocReadonlyTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocCallbackTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocEnumTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocParameterTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocReturnTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocThisTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocTypeTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocTemplateTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocTypedefTag, pass], // TODO create visitor
+    [SyntaxKind.JSDocPropertyTag, pass], // TODO create visitor
+    [SyntaxKind.SyntaxList, pass], // pass
+    [SyntaxKind.NotEmittedStatement, pass], // pass
+    [SyntaxKind.PartiallyEmittedExpression, pass], // pass
+    [SyntaxKind.CommaListExpression, pass], // pass
+    [SyntaxKind.MergeDeclarationMarker, pass], // pass
+    [SyntaxKind.EndOfDeclarationMarker, pass], // pass
+    [SyntaxKind.SyntheticReferenceExpression, pass], // TODO create visitor
+    [SyntaxKind.Count, pass], // pass
+    [SyntaxKind.FirstAssignment, pass], // pass
+    [SyntaxKind.LastAssignment, pass], // pass
+    [SyntaxKind.FirstCompoundAssignment, pass], // pass
+    [SyntaxKind.LastCompoundAssignment, pass], // pass
+    [SyntaxKind.FirstReservedWord, pass], // pass
+    [SyntaxKind.LastReservedWord, pass], // pass
+    [SyntaxKind.FirstKeyword, pass], // pass
+    [SyntaxKind.LastKeyword, pass], // pass
+    [SyntaxKind.FirstFutureReservedWord, pass], // pass
+    [SyntaxKind.LastFutureReservedWord, pass], // pass
+    [SyntaxKind.FirstTypeNode, pass], // pass
+    [SyntaxKind.LastTypeNode, pass], // pass
+    [SyntaxKind.FirstPunctuation, pass], // pass
+    [SyntaxKind.LastPunctuation, pass], // pass
+    [SyntaxKind.FirstToken, pass], // pass
+    [SyntaxKind.LastToken, pass], // pass
+    [SyntaxKind.FirstTriviaToken, pass], // pass
+    [SyntaxKind.LastTriviaToken, pass], // pass
+    [SyntaxKind.FirstLiteralToken, pass], // pass
+    [SyntaxKind.LastLiteralToken, pass], // pass
+    [SyntaxKind.FirstTemplateToken, pass], // pass
+    [SyntaxKind.LastTemplateToken, pass], // pass
+    [SyntaxKind.FirstBinaryOperator, pass], // pass
+    [SyntaxKind.LastBinaryOperator, pass], // pass
+    [SyntaxKind.FirstStatement, pass], // pass
+    [SyntaxKind.LastStatement, pass], // pass
+    [SyntaxKind.FirstNode, pass], // pass
+    [SyntaxKind.FirstJSDocNode, pass], // TODO create visitor
+    [SyntaxKind.LastJSDocNode, pass], // TODO create visitor
+    [SyntaxKind.FirstJSDocTagNode, pass], // TODO create visitor
+    [SyntaxKind.LastJSDocTagNode, pass], // TODO create visitor
 ])
 /*  eslint-enable @typescript-eslint/no-unused-vars */
