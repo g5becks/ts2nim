@@ -1,12 +1,110 @@
-import { Node, Project, SyntaxKind } from 'ts-morph'
+import { Node, Project, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
 
 const proj = new Project({ tsConfigFilePath: './tsconfig.json' })
 
 const file = proj.getSourceFiles()[0]
 
+const aliaser = file.getTypeAlias('')
 type DoneEvent = { message: 'Done' }
 type NodeVisitor = (node: Node) => string | undefined | DoneEvent
 
+const nimReserved = [
+    'addr',
+    'and',
+    'as',
+    'asm',
+    'bind',
+    'block',
+    'break',
+    'case',
+    'cast',
+    'concept',
+    'const',
+    'continue',
+    'converter',
+    'defer',
+    'discard',
+    'distinct',
+    'div',
+    'do',
+    'elif',
+    'else',
+    'end',
+    'enum',
+    'except',
+    'export',
+    'finally',
+    'for',
+    'from',
+    'func',
+    'if',
+    'import',
+    'in',
+    'include',
+    'interface',
+    'is',
+    'isnot',
+    'iterator',
+    'let',
+    'macro',
+    'method',
+    'mixin',
+    'mod',
+    'nil',
+    'not',
+    'notin',
+    'object',
+    'of',
+    'or',
+    'out',
+    'proc',
+    'ptr',
+    'raise',
+    'ref',
+    'return',
+    'shl',
+    'shr',
+    'static',
+    'template',
+    'try',
+    'tuple',
+    'type',
+    'using',
+    'var',
+    'when',
+    'while',
+    'xor',
+    'yield',
+    'Object',
+]
+
+const capitalize = (text: string): string => text.replace(/^\w/, (c) => c.toUpperCase())
+
+const lowerCase = (text: string): string => text.replace(/^\w/, (c) => c.toLowerCase())
+
+const typesMap = new Map<string, string>([
+    ['string', 'cstring'],
+    ['boolean', 'bool'],
+    ['any', 'any'],
+    ['unknown', 'any'],
+    ['number', 'int'],
+    ['void', 'void'],
+    ['null', '`null`'],
+    ['undefined', 'undefined'],
+    ['never', 'never'],
+])
+const isReservedWord = (word: string): boolean => nimReserved.includes(word)
+
+const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
+
+const typeAliasVisitor = (node: Node): string => {
+    const alias = node as TypeAliasDeclaration
+    const name = alias.getNameNode().getText().trim()
+    const typeName = isReservedWord(name) ? `js${capitalize(name)}` : name
+    if (hasTypeParam(alias)) {
+    }
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node) => undefined
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
