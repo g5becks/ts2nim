@@ -1,4 +1,5 @@
-import { ClassDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, TypeParameterDeclaration } from 'ts-morph'
+import { ClassDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
+import { hasTypeParam, isReservedWord } from './utils'
 
 const proj = new Project({ tsConfigFilePath: './tsconfig.json' })
 
@@ -8,106 +9,8 @@ const aliaser = file.getTypeAlias('')
 type DoneEvent = { message: 'Done' }
 type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
 
-const nimReserved = [
-    'addr',
-    'and',
-    'as',
-    'asm',
-    'bind',
-    'block',
-    'break',
-    'case',
-    'cast',
-    'concept',
-    'const',
-    'continue',
-    'converter',
-    'defer',
-    'discard',
-    'distinct',
-    'div',
-    'do',
-    'elif',
-    'else',
-    'end',
-    'enum',
-    'except',
-    'export',
-    'finally',
-    'for',
-    'from',
-    'func',
-    'if',
-    'import',
-    'in',
-    'include',
-    'interface',
-    'is',
-    'isnot',
-    'iterator',
-    'let',
-    'macro',
-    'method',
-    'mixin',
-    'mod',
-    'nil',
-    'not',
-    'notin',
-    'object',
-    'of',
-    'or',
-    'out',
-    'proc',
-    'ptr',
-    'raise',
-    'ref',
-    'return',
-    'shl',
-    'shr',
-    'static',
-    'template',
-    'try',
-    'tuple',
-    'type',
-    'using',
-    'var',
-    'when',
-    'while',
-    'xor',
-    'yield',
-    'Object',
-]
-
 const capitalize = (text: string): string => text.replace(/^\w/, (c) => c.toUpperCase())
 
-const lowerCase = (text: string): string => text.replace(/^\w/, (c) => c.toLowerCase())
-
-const typesMap = new Map<string, string>([
-    ['string', 'cstring'],
-    ['boolean', 'bool'],
-    ['any', 'any'],
-    ['unknown', 'any'],
-    ['number', 'int'],
-    ['void', 'void'],
-    ['null', '`null`'],
-    ['undefined', 'undefined'],
-    ['never', 'never'],
-])
-const isReservedWord = (word: string): boolean => nimReserved.includes(word)
-
-const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
-
-const typeParamVisitor = (node: Node | Node[]): string => {
-    const singleNode = node as TypeParameterDeclaration
-    let nodes: TypeParameterDeclaration[] = []
-    if (Array.isArray(node)) {
-        for (const n of node) {
-            nodes = nodes.concat(n as TypeParameterDeclaration)
-        }
-    }
-
-    return ''
-}
 const typeAliasVisitor = (node: Node | Node[]): string => {
     const alias = node as TypeAliasDeclaration
     const name = alias.getNameNode().getText().trim()
