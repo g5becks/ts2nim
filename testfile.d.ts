@@ -7,7 +7,7 @@ declare let Infinit: number
  */
 declare function eval(x: string): any
 
-type SomeType<T extends { name: string }> = {
+type SomeType<T extends (name: string) => string> = {
     val: T
 }
 

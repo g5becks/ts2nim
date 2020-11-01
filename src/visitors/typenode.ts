@@ -1,4 +1,4 @@
-import { Type } from 'ts-morph'
+import { Signature, Type, TypeNode } from 'ts-morph'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],
@@ -11,7 +11,8 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
-export const makeDataType = (type: Type): string => {
+const buildAnonymousProc = (signature: Signature): string => {}
+export const makeDataType = (type: Type | TypeNode): string => {
     if (primitiveMap.has(type.getText())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return primitiveMap.get(type.getText())!
@@ -53,13 +54,13 @@ export const makeDataType = (type: Type): string => {
         return type.getText().trim()
     }
 
-    // TODO fix this
+    // same as above
     if (type.isEnum() || type.isEnumLiteral()) {
         return 'any'
     }
     if (type.isAnonymous()) {
         if (type.getCallSignatures().length) {
-            return 'proc()'
+            const sig = type.getCallSignatures()[0]
         }
         return 'JsObject'
     }
