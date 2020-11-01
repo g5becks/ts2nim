@@ -1,4 +1,4 @@
-import { Node, SyntaxKind } from 'ts-morph'
+import { ClassDeclaration, Node, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
 
 const nimReserved = [
     'addr',
@@ -78,4 +78,8 @@ export const isReservedWord = (word: string): boolean => nimReserved.includes(wo
 
 export const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
 
-export const buildTypeName = (node: Node): string => {}
+export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration): string => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const name = node.getNameNode()!.getText().trim()
+    return isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
+}
