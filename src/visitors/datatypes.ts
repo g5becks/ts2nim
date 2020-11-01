@@ -31,7 +31,7 @@ export const buildAnonymousProc = (signature: Signature): string => {
             typeParams = [...typeParams, makeDataType(param)]
         }
     }
-    const returnType = makeDataType(signature.getReturnType())
+    const returnType = makeDataType(signature.getReturnType(), true)
     const generic = typeParams.length ? `[${typeParams}]` : ''
     return `proc${generic}(${builtParams.join(',')}): ${returnType}`
 }
