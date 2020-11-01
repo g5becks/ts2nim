@@ -1,4 +1,6 @@
 import { Project } from 'ts-morph'
+import { buildAnonymousProc } from './visitors/datatypes'
+
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
@@ -12,10 +14,7 @@ const t = tParam.getConstraintOrThrow()
 // You Can Always Get The Type Of the TypeNode
 if (t.getType().isAnonymous()) {
     const sig = t.getType().getCallSignatures()[0]
-    const params = sig.getParameters()
-    for (const param of params) {
-        console.log(param.getValueDeclaration()?.getType().getText())
-    }
+    console.log(buildAnonymousProc(sig))
 }
 /*
 file.forEachChildAsArray().forEach((child) => console.log(child.getKindName()))
