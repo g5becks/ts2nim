@@ -5,7 +5,9 @@ const file = proj.getSourceFiles()[0]
 
 const vars = file.getChildrenOfKind(SyntaxKind.VariableStatement)
 
-console.log(vars.forEach((v) => console.log(v.getText())))
+for (const v of vars) {
+    console.log(v.getDeclarationKind())
+}
 
 /*
 file.forEachChildAsArray().forEach((child) => console.log(child.getKindName()))
