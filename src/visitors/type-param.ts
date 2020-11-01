@@ -15,7 +15,9 @@ const handleConstraint = (type: Type): string => {
     if (type.isIntersection()) {
         return ''
     }
-
+    // TODO implement generation of literal types
+    // this can be done via a simple type and a proc that returns the val,
+    // E.g. type `stringName` = string & proc newStringName(): `stringName` = stringName
     if (type.isStringLiteral() || type.isString()) {
         return 'string'
     }
