@@ -45,10 +45,21 @@ const handleConstraint = (type: Type): string => {
     if (type.isAny()) {
         return 'any'
     }
+    // TODO fix this
+    if (type.isEnum() || type.isEnumLiteral()) {
+        return 'any'
+    }
+    if (type.isAnonymous()) {
+        if (type.getCallSignatures().length) {
+            return 'proc()'
+        }
+        return 'JsObject'
+    }
+
     if (type.isArray()) {
         // if it's an array - it probably has a type param
         if (type.getArrayElementType()) {
-            const types = type.getArrayElementType()
+            return `JsArray[${handleConstraint(type.getArrayElementType()!)}]`
         }
         return 'JsArray'
     }
