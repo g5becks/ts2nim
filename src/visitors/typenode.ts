@@ -15,6 +15,8 @@ const primitiveMap = new Map<string, string>([
 const buildAnonymousProc = (signature: Signature): string => {
     const params: Symb[] = signature.getParameters()
     let builtParams: string[] = []
+    let typeParams: string[] = []
+    let returnType = 'any'
     for (const param of params) {
         const paramName: string = !isReservedWord(param.getName())
             ? param.getName()
@@ -25,6 +27,14 @@ const buildAnonymousProc = (signature: Signature): string => {
                 : makeDataType(param.getValueDeclarationOrThrow().getType())
         builtParams = [...builtParams, `${paramName}: ${paramType}`]
     }
+    if (signature.getTypeParameters().length) {
+        for (const param of signature.getTypeParameters()) {
+            typeParams = [...typeParams, makeDataType(param)]
+        }
+    }
+    returnType = makeDataType(signature.getReturnType())
+    const generic = typeParams.length ? `[${typeParams}]` : ''
+    return `proc${generic}(${builtParams.join(',')}): ${returnType}`
 }
 export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
