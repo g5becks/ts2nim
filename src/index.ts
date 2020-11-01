@@ -1,5 +1,4 @@
-import { ClassDeclaration, Node, Project, SyntaxKind } from 'ts-morph'
-import { hasTypeParam, isReservedWord } from './utils'
+import { Node, Project, SyntaxKind } from 'ts-morph'
 
 const proj = new Project({ tsConfigFilePath: './tsconfig.json' })
 
@@ -10,16 +9,6 @@ type DoneEvent = { message: 'Done' }
 type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
 
 const capitalize = (text: string): string => text.replace(/^\w/, (c) => c.toUpperCase())
-
-const classVisitor = (node: Node | Node[]): string => {
-    const classs = node as ClassDeclaration
-    const className = classs.getNameNodeOrThrow()?.getText().trim()
-    const typeName = isReservedWord(className) ? `Js${capitalize(className)}` : capitalize(className)
-    if (hasTypeParam(classs)) {
-        classs.getTypeParameters()
-    }
-    return ''
-}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | Node[]) => undefined
