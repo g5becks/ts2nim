@@ -2,8 +2,11 @@ declare let Na: number
 declare let Infinit: number
 
 /**
- * Evaluates JavaScript code and executes it.
- * @param x A String value that contains valid JavaScript code.
+ * Converts a string to an integer.
+ * @param s A string to convert into a number.
+ * @param radix A value between 2 and 36 that specifies the base of the number in numString.
+ * If this argument is not supplied, strings with a prefix of '0x' are considered hexadecimal.
+ * All other strings are considered decimal.
  */
 declare function eval(x: string): any
 

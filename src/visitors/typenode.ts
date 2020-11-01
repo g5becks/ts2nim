@@ -1,4 +1,5 @@
-import { Signature, Type, TypeNode } from 'ts-morph'
+import { Signature, Symbol as Symb, Type } from 'ts-morph'
+import { isReservedWord } from './utils'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],
@@ -11,12 +12,22 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
-const buildAnonymousProc = (signature: Signature): string => {}
-export const makeDataType = (type: Type | TypeNode): string => {
+const buildAnonymousProc = (signature: Signature): string => {
+    const decl = signature.getDeclaration()
+    const params: Symb[] = signature.getParameters()
+    let paramNames: string[] = []
+    for (const param of params) {
+        if (!isReservedWord(param.getName())) {
+            paramNames = [...paramNames, param.getName()]
+        }
+    }
+}
+export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return primitiveMap.get(type.getText())!
     }
+
     // TODO handle union type
     if (type.isUnion()) {
         return ''
