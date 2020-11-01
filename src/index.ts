@@ -1,4 +1,4 @@
-import { ClassDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
+import { ClassDeclaration, Node, Project, SyntaxKind } from 'ts-morph'
 import { hasTypeParam, isReservedWord } from './utils'
 
 const proj = new Project({ tsConfigFilePath: './tsconfig.json' })
@@ -10,16 +10,6 @@ type DoneEvent = { message: 'Done' }
 type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
 
 const capitalize = (text: string): string => text.replace(/^\w/, (c) => c.toUpperCase())
-
-const typeAliasVisitor = (node: Node | Node[]): string => {
-    const alias = node as TypeAliasDeclaration
-    const name = alias.getNameNode().getText().trim()
-    const typeName = isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
-    if (hasTypeParam(alias)) {
-        alias.getTypeParameters()
-    }
-    return ''
-}
 
 const classVisitor = (node: Node | Node[]): string => {
     const classs = node as ClassDeclaration
