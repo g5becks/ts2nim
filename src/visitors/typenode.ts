@@ -1,5 +1,5 @@
 import { Signature, Symbol as Symb, Type } from 'ts-morph'
-import { isReservedWord } from './utils'
+import { capitalize, isReservedWord } from './utils'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],
@@ -13,13 +13,17 @@ const primitiveMap = new Map<string, string>([
 ])
 
 const buildAnonymousProc = (signature: Signature): string => {
-    const decl = signature.getDeclaration()
     const params: Symb[] = signature.getParameters()
-    let paramNames: string[] = []
+    let builtParams: string[] = []
     for (const param of params) {
-        if (!isReservedWord(param.getName())) {
-            paramNames = [...paramNames, param.getName()]
-        }
+        const paramName: string = !isReservedWord(param.getName())
+            ? param.getName()
+            : `js${capitalize(param.getName())}`
+        const paramType =
+            typeof param.getValueDeclaration() === 'undefined'
+                ? 'any'
+                : makeDataType(param.getValueDeclarationOrThrow().getType())
+        builtParams = [...builtParams, `${paramName}: ${paramType}`]
     }
 }
 export const makeDataType = (type: Type): string => {

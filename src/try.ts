@@ -11,11 +11,10 @@ const t = tParam.getConstraintOrThrow()
 
 // You Can Always Get The Type Of the TypeNode
 if (t.getType().isAnonymous()) {
-    console.log(t.getKindName())
     const sig = t.getType().getCallSignatures()[0]
     const params = sig.getParameters()
     for (const param of params) {
-        console.log(param.getName())
+        console.log(param.getValueDeclaration()?.getType().getText())
     }
 }
 /*
