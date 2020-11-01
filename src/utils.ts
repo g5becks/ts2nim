@@ -77,3 +77,5 @@ export const lowerCase = (text: string): string => text.replace(/^\w/, (c) => c.
 export const isReservedWord = (word: string): boolean => nimReserved.includes(word)
 
 export const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
+
+export const buildTypeName = (node: Node): string => {}
