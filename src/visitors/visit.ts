@@ -3,13 +3,16 @@ import { typeAliasVisitor } from './typealias'
 import { typeParamVisitor } from './typeparams'
 
 type DoneEvent = { message: 'Done' }
+
+const isDone = (event: any): event is DoneEvent =>
+    typeof event === 'object' && 'message' in event && event.message === 'Done'
 type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | Node[]) => undefined
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const vistorMap = new Map<number, NodeVisitor>([
+const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
     [SyntaxKind.EndOfFileToken, (_node: Node | Node[]): DoneEvent => ({ message: 'Done' })],
     [SyntaxKind.SingleLineCommentTrivia, pass], // pass
@@ -183,7 +186,7 @@ const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.IndexSignature, pass], // TODO create visitor
     [SyntaxKind.TypePredicate, pass], // TODO create visitor
     [SyntaxKind.TypeReference, pass], // TODO create visitor
-    [SyntaxKind.FunctionType, pass], // TODO create visitor
+    [SyntaxKind.FunctionType, pass], // this is handled by makeDataType function
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, pass], // TODO create visitor
     [SyntaxKind.TypeLiteral, pass], // TODO create visitor
@@ -379,10 +382,21 @@ const vistorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.FirstJSDocTagNode, pass], // TODO create visitor
     [SyntaxKind.LastJSDocTagNode, pass], // TODO create visitor
 ])
-/*  eslint-enable @typescript-eslint/no-unused-vars */
 
+/*  eslint-enable @typescript-eslint/no-unused-vars */
 const visit = (node: Node | Node[]): string => {
-    return ''
+    let result = ''
+    if (Array.isArray(node)) {
+        for (const n of node) {
+            if (visitorMap.has(n.getKind())) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const data = visitorMap.get(n.getKind())!(n)
+                if (!isDone(data)) {
+                    if (data) result = result.concat()
+                }
+            }
+        }
+    }
 }
 
 export const generate = (file: SourceFile): string => visit(file.forEachChildAsArray())
