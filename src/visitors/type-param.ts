@@ -1,6 +1,5 @@
 import { Node, Type, TypeParameterDeclaration } from 'ts-morph'
 import { isReservedWord } from '../utils'
-import { visit } from './root'
 
 /** Checks to see if the type param has a constraint */
 const hasConstraint = (param: TypeParameterDeclaration): boolean =>
@@ -74,16 +73,13 @@ const transform = (node: TypeParameterDeclaration): string => {
             return `Js${node.getText().trim()}`
         }
     }
-    return `: ${visit(node.getType().getConstraintOrThrow())}`
+    return `: ${handleConstraint(node.getType().getConstraintOrThrow())}`
 }
 export const typeParamVisitor = (node: Node | Node[]): string => {
-    const singleNode = node as TypeParameterDeclaration
-    let nodes: TypeParameterDeclaration[] = []
     if (Array.isArray(node)) {
-        for (const n of node) {
-            nodes = nodes.concat(n as TypeParameterDeclaration)
-        }
+        const nodes = node.map((n) => transform(n as TypeParameterDeclaration) + '')
+        return `[${nodes.join(',')}]`
     }
 
-    return '[]'
+    return `[${transform(node as TypeParameterDeclaration)}]`
 }
