@@ -7,10 +7,50 @@ const hasConstraint = (param: TypeParameterDeclaration): boolean =>
     typeof param.getType().getConstraint() !== 'undefined'
 
 const handleConstraint = (type: Type): string => {
+    // TODO handle union type
+    if (type.isUnion()) {
+        return ''
+    }
+
+    if (type.isIntersection()) {
+        return ''
+    }
+
+    if (type.isStringLiteral() || type.isString()) {
+        return 'string'
+    }
+
+    if (type.isNumber() || type.isNumberLiteral()) {
+        return 'int'
+    }
+
+    if (type.isUndefined()) {
+        return 'undefined'
+    }
+
+    if (type.isBoolean() || type.isBooleanLiteral()) {
+        return 'bool'
+    }
+
+    if (type.isNull()) {
+        return '`null`'
+    }
+    // TODO implement generation of classes and interfaces used for constraints
+    if (type.isClassOrInterface()) {
+        return 'JsObject'
+    }
+
     if (type.isAny()) {
         return 'any'
     }
-    if (typ)
+    if (type.isArray()) {
+        // if it's an array - it probably has a type param
+        if (type.getArrayElementType()) {
+            const types = type.getArrayElementType()
+        }
+        return 'JsArray'
+    }
+    return ''
 }
 /** Transform generic Type parameter from typescript form to nim for */
 const transform = (node: TypeParameterDeclaration): string => {

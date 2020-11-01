@@ -5,4 +5,4 @@ const file = proj.getSourceFiles()[0]
 
 const alias = file.getTypeAlias('SomeType')
 
-console.log(alias?.getTypeParameters()[0].getType().getConstraint()?.isAny())
+console.log(alias?.getTypeParameters()[0].getType().getConstraint()?.isClass())

@@ -1,4 +1,4 @@
-type SomeType<T extends () => string> = {
+type SomeType<T extends MyClass> = {
     val: T
 }
 
