@@ -85,9 +85,16 @@ export const makeDataType = (type: Type): string => {
     }
     if (type.isAnonymous()) {
         if (type.getCallSignatures().length) {
-            const sig = type.getCallSignatures()[0]
+            return buildAnonymousProc(type.getCallSignatures()[0])
         }
         return 'JsObject'
+    }
+
+    if (type.getText().startsWith('Promise<')) {
+        return `Future[${type
+            .getTypeArguments()
+            .map((arg) => makeDataType(arg))
+            .join(',')}]`
     }
 
     if (type.isArray()) {
