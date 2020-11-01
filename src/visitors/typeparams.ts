@@ -1,5 +1,5 @@
 import { Node, Type, TypeParameterDeclaration } from 'ts-morph'
-import { isReservedWord } from '../utils'
+import { isReservedWord } from './utils'
 
 /** Checks to see if the type param has a constraint */
 const hasConstraint = (param: TypeParameterDeclaration): boolean =>

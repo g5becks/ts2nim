@@ -7,7 +7,7 @@ const vars = file.getChildrenOfKind(SyntaxKind.VariableStatement)
 
 for (const v of vars) {
     const decs = v.getDeclarations()
-    decs.forEach((dec) => console.log(dec.getName()))
+    decs.forEach((dec) => console.log(dec.getType().getText()))
 }
 
 /*

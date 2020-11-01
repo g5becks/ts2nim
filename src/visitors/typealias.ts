@@ -1,5 +1,5 @@
 import { Node, TypeAliasDeclaration } from 'ts-morph'
-import { buildTypeName, hasTypeParam } from '../utils'
+import { buildTypeName, hasTypeParam } from './utils'
 
 export const typeAliasVisitor = (node: Node | Node[]): string => {
     const alias = node as TypeAliasDeclaration
