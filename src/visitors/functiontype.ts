@@ -4,6 +4,6 @@ import { visit } from './visit'
 
 export const functionTypeVisitor = (node: Node | Node[]): string => {
     const signature = node as FunctionTypeNode
-    const returnType = makeDataType(signature.getReturnType(), true)
+    const returnType = makeDataType(signature.getReturnType())
     return `proc${visit(signature.getTypeParameters())}(${visit(signature.getParameters())}): ${returnType}`
 }

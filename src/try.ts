@@ -1,4 +1,5 @@
 import { Project, TypeLiteralNode } from 'ts-morph'
+import { methodSignatureVisitor } from './visitors/method'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
@@ -10,7 +11,7 @@ const lit = types.getTypeNodeOrThrow() as TypeLiteralNode
 
 const method = lit.getMethods()[0]
 
-const paramCount = method.getParameters().map((param) => '#')
+console.log(methodSignatureVisitor(method, 'TestType'))
 
 // You Can Always Get The Type Of the TypeNode
 /*
