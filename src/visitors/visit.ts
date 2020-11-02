@@ -1,6 +1,7 @@
 import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
 import { functionTypeVisitor } from './functiontype'
+import { parameterVisitor } from './parameter'
 import { typeAliasVisitor } from './typealias'
 import { typeParamVisitor } from './typeparams'
 
@@ -174,7 +175,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.QualifiedName, pass], // pass
     [SyntaxKind.ComputedPropertyName, pass], // pass
     [SyntaxKind.TypeParameter, typeParamVisitor], // pass
-    [SyntaxKind.Parameter, pass], // pass
+    [SyntaxKind.Parameter, parameterVisitor], // pass
     [SyntaxKind.Decorator, pass], // pass
     [SyntaxKind.PropertySignature, pass], // TODO create visitor
     [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
