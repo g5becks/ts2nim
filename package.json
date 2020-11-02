@@ -21,6 +21,6 @@
         "ts-morph": "^8.1.2"
     },
     "scripts": {
-        "start": "./node_modules/ts-node/dist/bin.js ./src/try.ts"
+        "start": "./node_modules/ts-node/dist/bin.js --files ./src/try.ts"
     }
 }

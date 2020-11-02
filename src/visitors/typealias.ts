@@ -7,5 +7,5 @@ export const typeAliasVisitor = (node: Node | Node[]): string => {
     if (hasTypeParam(alias)) {
         alias.getTypeParameters()
     }
-    return ''
+    return '' + name
 }

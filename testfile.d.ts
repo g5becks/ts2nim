@@ -1,4 +1,4 @@
-declare let Na, Xa: number
+declare let Nan: number
 declare let Infinit: number
 
 /**

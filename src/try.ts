@@ -1,4 +1,5 @@
-import { Project, SyntaxKind } from 'ts-morph'
+import { Project } from 'ts-morph'
+import { variableVisitor } from './visitors/variable'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
@@ -6,7 +7,9 @@ const file = proj.getSourceFiles()[0]
 
 const vars = file.getVariableDeclarations()
 
-console.log(vars[0].getChildrenOfKind(SyntaxKind.Identifier)[0].getText())
+for (const v of vars) {
+    console.log(variableVisitor(v))
+}
 
 // You Can Always Get The Type Of the TypeNode
 /*
