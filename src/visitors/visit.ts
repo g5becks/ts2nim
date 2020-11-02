@@ -1,3 +1,4 @@
+import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
 import { typeAliasVisitor } from './typealias'
 import { typeParamVisitor } from './typeparams'
@@ -6,10 +7,10 @@ type DoneEvent = { message: 'Done' }
 
 const isDone = (event: any): event is DoneEvent =>
     typeof event === 'object' && 'message' in event && event.message === 'Done'
-type NodeVisitor = (node: Node | Node[]) => string | undefined | DoneEvent
+type NodeVisitor = (node: Node | Node[]) => string | DoneEvent
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pass = (_node: Node | Node[]) => undefined
+const pass = (_node: Node | Node[]) => ''
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
@@ -383,20 +384,32 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.LastJSDocTagNode, pass], // TODO create visitor
 ])
 
+const emitter = new events.EventEmitter()
+
+const handleNode = (n: Node): string => {
+    if (visitorMap.has(n.getKind())) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const data = visitorMap.get(n.getKind())!(n)
+        if (!isDone(data)) {
+            return data
+        } else {
+            emitter.emit(data.message)
+            return ''
+        }
+    }
+    return ''
+}
 /*  eslint-enable @typescript-eslint/no-unused-vars */
 const visit = (node: Node | Node[]): string => {
     let result = ''
     if (Array.isArray(node)) {
         for (const n of node) {
-            if (visitorMap.has(n.getKind())) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const data = visitorMap.get(n.getKind())!(n)
-                if (!isDone(data)) {
-                    if (data) result = result.concat()
-                }
-            }
+            result = result.concat(handleNode(n))
         }
+    } else {
+        return handleNode(node)
     }
+    return result
 }
 
 export const generate = (file: SourceFile): string => visit(file.forEachChildAsArray())
