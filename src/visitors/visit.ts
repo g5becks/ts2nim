@@ -14,7 +14,7 @@ type DoneEvent = { message: 'Done' }
 
 const isDone = (event: any): event is DoneEvent =>
     typeof event === 'object' && 'message' in event && event.message === 'Done'
-type NodeVisitor = (node: Node | Node[]) => string | DoneEvent
+type NodeVisitor = (node: Node | Node[], parentName?: string) => string | DoneEvent
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | Node[]) => ''

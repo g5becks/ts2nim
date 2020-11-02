@@ -12,10 +12,7 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
-export const makeDataType = (type: Type, isReturnType = false): string => {
-    if (type.isString() && isReturnType) {
-        return 'string'
-    }
+export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return primitiveMap.get(type.getText())!
