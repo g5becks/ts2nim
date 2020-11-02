@@ -4,6 +4,7 @@ import { functionTypeVisitor } from './functiontype'
 import { parameterVisitor } from './parameter'
 import { typeAliasVisitor } from './typealias'
 import { typeParamVisitor } from './typeparams'
+import { variableVisitor } from './variable'
 
 type DoneEvent = { message: 'Done' }
 
@@ -262,7 +263,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ThrowStatement, pass], // pass
     [SyntaxKind.TryStatement, pass], // pass
     [SyntaxKind.DebuggerStatement, pass], // pass
-    [SyntaxKind.VariableDeclaration, pass], // pass
+    [SyntaxKind.VariableDeclaration, variableVisitor], // pass
     [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
     [SyntaxKind.FunctionDeclaration, pass], // TODO create visitor
     [SyntaxKind.ClassDeclaration, pass], // TODO create visitor
