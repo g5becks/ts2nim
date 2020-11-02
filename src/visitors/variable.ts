@@ -2,8 +2,7 @@ import { Node, SyntaxKind, VariableDeclarationKind, VariableStatement } from 'ts
 import { makeDataType } from './datatypes'
 import { capitalize, isReservedWord } from './utils'
 
-const hasMultipleDeclarations = (v: VariableStatement): boolean =>
-    Boolean(v?.getVariableStatement()?.getDeclarations()?.length)
+const hasMultipleDeclarations = (v: VariableStatement): boolean => Boolean(v?.getDeclarations()?.length)
 
 const makeName = (v: VariableStatement): string => {
     const varName = v.getChildrenOfKind(SyntaxKind.Identifier)[0].getText()
