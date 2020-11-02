@@ -246,7 +246,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.SemicolonClassElement, pass], // pass
     [SyntaxKind.Block, pass], // pass
     [SyntaxKind.EmptyStatement, pass], // pass
-    [SyntaxKind.VariableStatement, pass], // TODO create visitor
+    [SyntaxKind.VariableStatement, variableVisitor], // TODO create visitor
     [SyntaxKind.ExpressionStatement, pass], // pass
     [SyntaxKind.IfStatement, pass], // pass
     [SyntaxKind.DoStatement, pass], // pass
@@ -263,7 +263,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ThrowStatement, pass], // pass
     [SyntaxKind.TryStatement, pass], // pass
     [SyntaxKind.DebuggerStatement, pass], // pass
-    [SyntaxKind.VariableDeclaration, variableVisitor], // pass
+    [SyntaxKind.VariableDeclaration, pass], // pass
     [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
     [SyntaxKind.FunctionDeclaration, pass], // TODO create visitor
     [SyntaxKind.ClassDeclaration, pass], // TODO create visitor
