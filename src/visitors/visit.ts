@@ -1,5 +1,6 @@
 import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
+import { functionTypeVisitor } from './functiontype'
 import { typeAliasVisitor } from './typealias'
 import { typeParamVisitor } from './typeparams'
 
@@ -187,7 +188,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.IndexSignature, pass], // TODO create visitor
     [SyntaxKind.TypePredicate, pass], // TODO create visitor
     [SyntaxKind.TypeReference, pass], // TODO create visitor
-    [SyntaxKind.FunctionType, pass], // this is handled by makeDataType function
+    [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, pass], // TODO create visitor
     [SyntaxKind.TypeLiteral, pass], // TODO create visitor
@@ -386,6 +387,11 @@ const visitorMap = new Map<number, NodeVisitor>([
 
 const emitter = new events.EventEmitter()
 
+emitter.addListener('Done', () => {
+    console.log('conversion complete')
+    process.exit()
+})
+
 const handleNode = (n: Node): string => {
     if (visitorMap.has(n.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -400,7 +406,7 @@ const handleNode = (n: Node): string => {
     return ''
 }
 /*  eslint-enable @typescript-eslint/no-unused-vars */
-const visit = (node: Node | Node[]): string => {
+export const visit = (node: Node | Node[]): string => {
     let result = ''
     if (Array.isArray(node)) {
         for (const n of node) {

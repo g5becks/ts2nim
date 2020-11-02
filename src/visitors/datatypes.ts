@@ -1,5 +1,5 @@
-import { Signature, Symbol as Symb, Type } from 'ts-morph'
-import { capitalize, isReservedWord } from './utils'
+import { Type } from 'ts-morph'
+import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],
@@ -12,29 +12,6 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
-export const buildAnonymousProc = (signature: Signature): string => {
-    const params: Symb[] = signature.getParameters()
-    let builtParams: string[] = []
-    let typeParams: string[] = []
-    for (const param of params) {
-        const paramName: string = !isReservedWord(param.getName())
-            ? param.getName()
-            : `js${capitalize(param.getName())}`
-        const paramType =
-            typeof param.getValueDeclaration() === 'undefined'
-                ? 'any'
-                : makeDataType(param.getValueDeclarationOrThrow().getType())
-        builtParams = [...builtParams, `${paramName}: ${paramType}`]
-    }
-    if (signature.getTypeParameters().length) {
-        for (const param of signature.getTypeParameters()) {
-            typeParams = [...typeParams, makeDataType(param)]
-        }
-    }
-    const returnType = makeDataType(signature.getReturnType(), true)
-    const generic = typeParams.length ? `[${typeParams}]` : ''
-    return `proc${generic}(${builtParams.join(',')}): ${returnType}`
-}
 export const makeDataType = (type: Type, isReturnType = false): string => {
     if (type.isString() && isReturnType) {
         return 'string'
@@ -87,7 +64,7 @@ export const makeDataType = (type: Type, isReturnType = false): string => {
     }
     if (type.isAnonymous()) {
         if (type.getCallSignatures().length) {
-            return buildAnonymousProc(type.getCallSignatures()[0])
+            return visit(type.getCallSignatures()[0].getDeclaration())
         }
         return 'JsObject'
     }
