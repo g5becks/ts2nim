@@ -2,7 +2,9 @@ import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
 import { functionTypeVisitor } from './functiontype'
 import { parameterVisitor } from './parameter'
+import { propertySignatureVisitor } from './property'
 import { typeAliasVisitor } from './typealias'
+import { typeLiteralVisitor } from './typeliteral'
 import { typeParamVisitor } from './typeparams'
 import { variableVisitor } from './variable'
 
@@ -178,7 +180,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TypeParameter, typeParamVisitor], // pass
     [SyntaxKind.Parameter, parameterVisitor], // pass
     [SyntaxKind.Decorator, pass], // pass
-    [SyntaxKind.PropertySignature, pass], // TODO create visitor
+    [SyntaxKind.PropertySignature, propertySignatureVisitor], // TODO create visitor
     [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
     [SyntaxKind.MethodSignature, pass], // TODO create visitor
     [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
@@ -193,7 +195,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, pass], // TODO create visitor
-    [SyntaxKind.TypeLiteral, pass], // TODO create visitor
+    [SyntaxKind.TypeLiteral, typeLiteralVisitor], // TODO create visitor
     [SyntaxKind.ArrayType, pass], // TODO create visitor
     [SyntaxKind.TupleType, pass], // TODO create visitor
     [SyntaxKind.OptionalType, pass], // TODO create visitor

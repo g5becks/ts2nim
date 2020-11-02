@@ -1,14 +1,13 @@
 import { Project } from 'ts-morph'
+import { typeLiteralVisitor } from './visitors/typeliteral'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
 
-const types = file.getTypeAliases()
+const types = file.getTypeAliases()[1]
 
-for (const t of types) {
-    console.log(t.getKindName())
-}
+console.log(typeLiteralVisitor(types.getTypeNodeOrThrow()))
 
 // You Can Always Get The Type Of the TypeNode
 /*
