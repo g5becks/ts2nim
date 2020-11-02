@@ -1,11 +1,13 @@
 import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
 import { functionTypeVisitor } from './functiontype'
+import { methodSignatureVisitor } from './method'
 import { parameterVisitor } from './parameter'
 import { propertySignatureVisitor } from './property'
 import { typeAliasVisitor } from './typealias'
 import { typeLiteralVisitor } from './typeliteral'
 import { typeParamVisitor } from './typeparams'
+import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
 
 type DoneEvent = { message: 'Done' }
@@ -182,7 +184,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Decorator, pass], // pass
     [SyntaxKind.PropertySignature, propertySignatureVisitor], // TODO create visitor
     [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
-    [SyntaxKind.MethodSignature, pass], // TODO create visitor
+    [SyntaxKind.MethodSignature, methodSignatureVisitor], // TODO create visitor
     [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
     [SyntaxKind.Constructor, pass], // TODO create visitor
     [SyntaxKind.GetAccessor, pass], // TODO create visitor
@@ -200,7 +202,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TupleType, pass], // TODO create visitor
     [SyntaxKind.OptionalType, pass], // TODO create visitor
     [SyntaxKind.RestType, pass], // TODO create visitor
-    [SyntaxKind.UnionType, pass], // TODO create visitor
+    [SyntaxKind.UnionType, unionTypeVisitor], // TODO create visitor
     [SyntaxKind.IntersectionType, pass], // TODO create visitor
     [SyntaxKind.ConditionalType, pass], // TODO create visitor
     [SyntaxKind.InferType, pass], // TODO create visitor
