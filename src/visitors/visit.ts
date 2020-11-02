@@ -398,10 +398,10 @@ emitter.addListener('Done', () => {
     process.exit()
 })
 
-const handleNode = (n: Node): string => {
+const handleNode = (n: Node, parentName?: string): string => {
     if (visitorMap.has(n.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const data = visitorMap.get(n.getKind())!(n)
+        const data = visitorMap.get(n.getKind())!(n, parentName)
         if (!isDone(data)) {
             return data
         } else {
@@ -412,14 +412,14 @@ const handleNode = (n: Node): string => {
     return ''
 }
 /*  eslint-enable @typescript-eslint/no-unused-vars */
-export const visit = (node: Node | Node[]): string => {
+export const visit = (node: Node | Node[], parentName?: string): string => {
     let result = ''
     if (Array.isArray(node)) {
         for (const n of node) {
-            result = result.concat(handleNode(n))
+            result = result.concat(handleNode(n, parentName))
         }
     } else {
-        return handleNode(node)
+        return handleNode(node, parentName)
     }
     return result
 }

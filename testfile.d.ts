@@ -1,6 +1,10 @@
 type SomeUnion = string | number | Record<string, unknown>
 
-type SomeType<T extends (name: string) => string> = {
+type SomeType<
+    T extends {
+        getName(name: string): string
+    }
+> = {
     val: T
     getMe: (name: string) => string
     getNames(name: string): string
