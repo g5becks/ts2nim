@@ -82,5 +82,9 @@ export const makeDataType = (type: Type): string => {
         }
         return 'JsArray'
     }
+
+    if (type.isTypeParameter()) {
+        return visit(type)
+    }
     return 'any'
 }

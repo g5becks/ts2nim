@@ -11,8 +11,9 @@ export const functionVisitor = (node: Node | Node[]): string => {
     }
     const name = isReservedWord(funcName) ? `js${capitalize(funcName)}` : funcName
     const params = func.getParameters()
+    const importParams = params.map((p) => (p.isRestParameter() ? '...#' : '#'))
     const builtParams = visit(params)
-    return `proc ${name}*${visit(func.getTypeParameters())}(${builtParams}): ${makeDataType(
-        func.getReturnType(),
-    )} {.importcpp:"${funcName}()"}`
+    return `proc ${name}*${visit(func.getTypeParameters())}(${builtParams}): ${visit(
+        func.getReturnTypeNodeOrThrow(),
+    )} {.importcpp:"${funcName}(${importParams})", nodecl.}`
 }

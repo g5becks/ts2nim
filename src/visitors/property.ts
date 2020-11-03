@@ -8,5 +8,5 @@ const handleProperty = (prop: PropertySignature): string => {
     return `${propName}: ${makeDataType(prop.getType())}`
 }
 export const propertySignatureVisitor = (node: Node | Node[]): string => {
-    return `${node}`
+    return `${handleProperty(node as PropertySignature)}`
 }
