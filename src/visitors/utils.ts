@@ -1,4 +1,12 @@
-import { ClassDeclaration, Node, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
+import {
+    ClassDeclaration,
+    FunctionDeclaration,
+    FunctionLikeDeclaration,
+    FunctionTypeNode,
+    Node,
+    SyntaxKind,
+    TypeAliasDeclaration,
+} from 'ts-morph'
 
 const nimReserved = [
     'addr',
@@ -83,3 +91,6 @@ export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration): st
     const name = node.getNameNode()!.getText().trim()
     return isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
 }
+
+export const hasRestParam = (func: FunctionDeclaration | FunctionTypeNode | FunctionLikeDeclaration): boolean =>
+    func.getParameters().some((param) => param.isRestParameter())
