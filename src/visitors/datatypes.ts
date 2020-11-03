@@ -84,7 +84,6 @@ export const makeDataType = (type: Type): string => {
     }
 
     if (type.isTypeParameter()) {
-        return visit(type)
     }
     return 'any'
 }

@@ -1,5 +1,6 @@
 import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
+import { arrayTypeVisitor } from './arraytype'
 import { functionVisitor } from './function'
 import { functionTypeVisitor } from './functiontype'
 import { methodSignatureVisitor } from './method'
@@ -8,6 +9,7 @@ import { propertySignatureVisitor } from './property'
 import { typeAliasVisitor } from './typealias'
 import { typeLiteralVisitor } from './typeliteral'
 import { typeParamVisitor } from './typeparams'
+import { typeReferenceVisitor } from './typeref'
 import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
 
@@ -194,12 +196,12 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ConstructSignature, pass], // TODO create visitor
     [SyntaxKind.IndexSignature, pass], // TODO create visitor
     [SyntaxKind.TypePredicate, pass], // TODO create visitor
-    [SyntaxKind.TypeReference, pass], // TODO create visitor
+    [SyntaxKind.TypeReference, typeReferenceVisitor], // TODO create visitor
     [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, pass], // TODO create visitor
     [SyntaxKind.TypeLiteral, typeLiteralVisitor], // TODO create visitor
-    [SyntaxKind.ArrayType, pass], // TODO create visitor
+    [SyntaxKind.ArrayType, arrayTypeVisitor], // TODO create visitor
     [SyntaxKind.TupleType, pass], // TODO create visitor
     [SyntaxKind.OptionalType, pass], // TODO create visitor
     [SyntaxKind.RestType, pass], // TODO create visitor
