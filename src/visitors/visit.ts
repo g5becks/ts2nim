@@ -1,5 +1,6 @@
 import events from 'events'
 import { Node, SourceFile, SyntaxKind } from 'ts-morph'
+import { functionVisitor } from './function'
 import { functionTypeVisitor } from './functiontype'
 import { methodSignatureVisitor } from './method'
 import { parameterVisitor } from './parameter'
@@ -202,7 +203,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TupleType, pass], // TODO create visitor
     [SyntaxKind.OptionalType, pass], // TODO create visitor
     [SyntaxKind.RestType, pass], // TODO create visitor
-    [SyntaxKind.UnionType, unionTypeVisitor], // TODO create visitor
+    [SyntaxKind.UnionType, unionTypeVisitor],
     [SyntaxKind.IntersectionType, pass], // TODO create visitor
     [SyntaxKind.ConditionalType, pass], // TODO create visitor
     [SyntaxKind.InferType, pass], // TODO create visitor
@@ -269,7 +270,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.DebuggerStatement, pass], // pass
     [SyntaxKind.VariableDeclaration, variableVisitor], // pass
     [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
-    [SyntaxKind.FunctionDeclaration, pass], // TODO create visitor
+    [SyntaxKind.FunctionDeclaration, functionVisitor], // TODO create visitor
     [SyntaxKind.ClassDeclaration, pass], // TODO create visitor
     [SyntaxKind.InterfaceDeclaration, pass], // TODO create visitor
     [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor], // TODO create visitor

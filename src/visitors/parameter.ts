@@ -5,6 +5,9 @@ import { capitalize, isReservedWord } from './utils'
 const handleParam = (param: ParameterDeclaration): string => {
     const name = !isReservedWord(param.getName()) ? param.getName() : `js${capitalize(param.getName())}`
     const paramType = makeDataType(param.getType())
+    if (param.isRestParameter()) {
+        return `${name}: varargs[${paramType}]`
+    }
     return `${name}: ${paramType}`
 }
 export const parameterVisitor = (node: Node | Node[]): string => {
