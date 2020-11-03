@@ -1,4 +1,5 @@
 import { Type } from 'ts-morph'
+import { isReservedWord } from './utils'
 import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
@@ -84,6 +85,14 @@ export const makeDataType = (type: Type): string => {
     }
 
     if (type.isTypeParameter()) {
+        const typeText = type.getText()
+        if (typeof type.getConstraint() === 'undefined') {
+            return isReservedWord(typeText) ? `js${typeText}` : typeText
+        } else {
+            return isReservedWord(typeText)
+                ? `js${typeText}: ${makeDataType(type.getConstraintOrThrow())}`
+                : `${typeText}: ${makeDataType(type.getConstraintOrThrow())}`
+        }
     }
     return 'any'
 }

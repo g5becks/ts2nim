@@ -185,9 +185,9 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TypeParameter, typeParamVisitor], // pass
     [SyntaxKind.Parameter, parameterVisitor], // pass
     [SyntaxKind.Decorator, pass], // pass
-    [SyntaxKind.PropertySignature, propertySignatureVisitor], // TODO create visitor
+    [SyntaxKind.PropertySignature, propertySignatureVisitor],
     [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
-    [SyntaxKind.MethodSignature, methodSignatureVisitor], // TODO create visitor
+    [SyntaxKind.MethodSignature, methodSignatureVisitor],
     [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
     [SyntaxKind.Constructor, pass], // TODO create visitor
     [SyntaxKind.GetAccessor, pass], // TODO create visitor
@@ -200,8 +200,8 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, pass], // TODO create visitor
-    [SyntaxKind.TypeLiteral, typeLiteralVisitor], // TODO create visitor
-    [SyntaxKind.ArrayType, arrayTypeVisitor], // TODO create visitor
+    [SyntaxKind.TypeLiteral, typeLiteralVisitor],
+    [SyntaxKind.ArrayType, arrayTypeVisitor],
     [SyntaxKind.TupleType, pass], // TODO create visitor
     [SyntaxKind.OptionalType, pass], // TODO create visitor
     [SyntaxKind.RestType, pass], // TODO create visitor
