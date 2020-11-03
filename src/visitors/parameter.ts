@@ -2,6 +2,7 @@ import { Node, ParameterDeclaration } from 'ts-morph'
 import { makeDataType } from './datatypes'
 import { capitalize, isReservedWord } from './utils'
 
+export const hasRestParam = (params: ParameterDeclaration[]): boolean => params.some((param) => param.isRestParameter())
 const handleParam = (param: ParameterDeclaration): string => {
     const name = !isReservedWord(param.getName()) ? param.getName() : `js${capitalize(param.getName())}`
     const paramType = makeDataType(param.getType())
