@@ -3,8 +3,13 @@ import { visit } from './visit'
 
 export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): string => {
     const n = node as TypeLiteralNode
+    let methods = ''
     if (n.getMethods().length) {
-        const methods = visit(n.getMethods(), parentName)
+        methods = visit(n.getMethods(), parentName)
     }
-    return n.getMethods()[0].getKindName()
+    const properties = visit(n.getProperties())
+    if (parentName) {
+        return properties + methods
+    }
+    return `JsObj[tuple[${properties}]]`
 }

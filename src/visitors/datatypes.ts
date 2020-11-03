@@ -63,7 +63,9 @@ export const makeDataType = (type: Type): string => {
         if (type.getCallSignatures().length) {
             return visit(type.getCallSignatures()[0].getDeclaration())
         }
-        return 'JsObject'
+        if (type.isLiteral()) {
+            return ''
+        }
     }
 
     if (type.getText().startsWith('Promise<')) {

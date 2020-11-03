@@ -1,5 +1,10 @@
-import { Node } from 'ts-morph'
+import { Node, UnionTypeNode } from 'ts-morph'
+import { makeDataType } from './datatypes'
 
+const buildUnion = (union: UnionTypeNode): string => {
+    const types = union.getTypeNodes().map((node) => makeDataType(node.getType()))
+}
 export const unionTypeVisitor = (node: Node | Node[]): string => {
-    return `${node}`
+    if (Array.isArray(node)) {
+    }
 }

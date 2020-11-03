@@ -1,5 +1,6 @@
-type SomeUnion = string | number | Record<string, unknown>
+type SomeUnion = string | number | Record<string, unknown> | { name: string; age: number }
 
+type SomeFunc = (name: string) => string
 type SomeType<
     T extends {
         getName(name: string): string
