@@ -135,28 +135,28 @@ const variableVisitor = (node: Node): string => {
     return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
 }
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.NumberKeyword */
 const numberVisitor = (_node: Node): string => 'int'
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.UnknownKeyword */
 const unknownVisitor = (_node: Node): string => 'any'
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.StringKeyword */
 const stringVisitor = (_node: Node): string => 'cstring'
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.BooleanKeyword */
 const booleanVisitor = (_node: Node): string => 'bool'
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.UndefinedKeyword */
 const undefinedVisitor = (_node: Node): string => 'undefined'
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.Identifier */
 const identifierVisitor = (node: Node): string => {
     const name = node.getText().trim()
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.TypeReference */
 const typeReferenceVisitor = (node: Node): string => {
     const ref = node as TypeReferenceNode
     const typeName = visit(ref.getTypeName())
@@ -169,7 +169,7 @@ const typeReferenceVisitor = (node: Node): string => {
     return buildTypeName(typeName)
 }
 
-/** Visitor for SyntaxKind. */
+/** Visitor for SyntaxKind.LiteralType */
 const literalTypeVisitor = (node: Node): string => {
     const lit = node as LiteralTypeNode
     const litType = lit.getLiteral()
@@ -183,7 +183,7 @@ const literalTypeVisitor = (node: Node): string => {
     return 'any'
 }
 
-export const emitter = new events.EventEmitter()
+const emitter = new events.EventEmitter()
 emitter.addListener('Done', () => {
     console.log('conversion complete')
     process.exit()
