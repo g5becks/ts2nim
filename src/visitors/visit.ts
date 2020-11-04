@@ -1,5 +1,5 @@
 import events from 'events'
-import { Node, SourceFile, SyntaxKind } from 'ts-morph'
+import { Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
 import { arrayTypeVisitor } from './arraytype'
 import { functionVisitor } from './function'
 import { functionTypeVisitor } from './functiontype'
@@ -409,7 +409,7 @@ emitter.addListener('Done', () => {
     process.exit()
 })
 
-const handleNode = (n: Node, parentName?: string): string => {
+const handleNode = (n: Node | TypeNode, parentName?: string): string => {
     if (visitorMap.has(n.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const data = visitorMap.get(n.getKind())!(n, parentName)
@@ -422,8 +422,8 @@ const handleNode = (n: Node, parentName?: string): string => {
     }
     return ''
 }
-/*  eslint-enable @typescript-eslint/no-unused-vars */
-export const visit = (node: Node | Node[], parentName?: string): string => {
+
+export const visit = (node: Node | Node[] | TypeNode | TypeNode[], parentName?: string): string => {
     let result = ''
     if (Array.isArray(node)) {
         for (const n of node) {
