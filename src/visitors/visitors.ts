@@ -18,7 +18,7 @@ import {
     VariableDeclarationKind,
 } from 'ts-morph'
 
-import {makeDataType, typeReferenceVisitor,} from './datatypes'
+import { makeDataType, typeReferenceVisitor } from './datatypes'
 import {
     buildFFIParams,
     buildParams,
@@ -28,9 +28,9 @@ import {
     buildVarName,
     capitalize,
     hasTypeParam,
-    isReservedWord
+    isReservedWord,
 } from './utils'
-import {visitorMap} from "./visitormap";
+import { visitorMap } from './visitormap'
 
 type DoneEvent = { message: 'Done' }
 
@@ -60,15 +60,15 @@ const functionVisitor = (node: Node): string => {
         return visit(node)
     }
     const name = buildVarName(func.getName()!)
-    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)} {.importcpp:"${name}(${buildFFIParams(func)})", nodecl.}`
+    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(
+        func,
+    )} {.importcpp:"${name}(${buildFFIParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
 const functionTypeVisitor = (node: Node | Node[]): string => {
-    const signature = node as FunctionTypeNode
-    const returnType = signature.getReturnTypeNode() ? visit(signature.getParentOrThrow()) : 'any'
-    const typeParams = signature.getTypeParameters().length ? `[${}]`
-    return `proc${visit(signature.getTypeParameters())}(${visit(signature.getParameters())}): ${returnType}`
+    const func = node as FunctionTypeNode
+    return `proc${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)}`
 }
 
 /** Visitor for SyntaxKind.MethodSignature */
@@ -155,8 +155,6 @@ const variableVisitor = (node: Node): string => {
     return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
 }
 
-export {variableVisitor, unionTypeVisitor, typeReferenceVisitor, typeParamVisitor, typeLiteralVisitor, typeAliasVisitor, parameterVisitor, methodSignatureVisitor, functionTypeVisitor, functionVisitor, classVisitor, NodeVisitor, arrayTypeVisitor, pass, DoneEvent}
-
 const emitter = new events.EventEmitter()
 
 emitter.addListener('Done', () => {
@@ -183,3 +181,21 @@ export const generate = (file: SourceFile): string =>
         .forEachChildAsArray()
         .map((child) => visit(child))
         .join()
+
+export {
+    variableVisitor,
+    unionTypeVisitor,
+    typeReferenceVisitor,
+    typeParamVisitor,
+    typeLiteralVisitor,
+    typeAliasVisitor,
+    parameterVisitor,
+    methodSignatureVisitor,
+    functionTypeVisitor,
+    functionVisitor,
+    classVisitor,
+    NodeVisitor,
+    arrayTypeVisitor,
+    pass,
+    DoneEvent,
+}
