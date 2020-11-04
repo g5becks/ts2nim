@@ -9,10 +9,16 @@ import { propertySignatureVisitor } from './property'
 import { typeAliasVisitor } from './typealias'
 import { typeLiteralVisitor } from './typeliteral'
 import { typeParamVisitor } from './typeparams'
-import { typeReferenceVisitor } from './typeref'
 import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
-import { booleanVisitor, numberVisitor, stringVisitor } from './datatypes'
+import {
+    booleanVisitor,
+    numberVisitor,
+    stringVisitor,
+    undefinedVisitor,
+    typeReferenceVisitor,
+    identifierVisitor,
+} from './datatypes'
 
 type DoneEvent = { message: 'Done' }
 
@@ -103,7 +109,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.AmpersandAmpersandEqualsToken, pass], // pass
     [SyntaxKind.QuestionQuestionEqualsToken, pass], // pass
     [SyntaxKind.CaretEqualsToken, pass], // pass
-    [SyntaxKind.Identifier, pass], // pass
+    [SyntaxKind.Identifier, identifierVisitor], // pass
     [SyntaxKind.PrivateIdentifier, pass], // pass
     [SyntaxKind.BreakKeyword, pass], // pass
     [SyntaxKind.CaseKeyword, pass], // pass
@@ -174,7 +180,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.StringKeyword, stringVisitor], // pass
     [SyntaxKind.SymbolKeyword, pass], // pass
     [SyntaxKind.TypeKeyword, pass], // pass
-    [SyntaxKind.UndefinedKeyword, pass], // pass
+    [SyntaxKind.UndefinedKeyword, undefinedVisitor], // pass
     [SyntaxKind.UniqueKeyword, pass], // pass
     [SyntaxKind.UnknownKeyword, pass], // pass
     [SyntaxKind.FromKeyword, pass], // pass

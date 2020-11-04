@@ -1,4 +1,4 @@
-import { Node, Type } from 'ts-morph'
+import { Identifier, Node, Type, TypeReferenceNode } from 'ts-morph'
 import { isReservedWord } from './utils'
 import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
@@ -13,6 +13,13 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
+export const typesMap = new Map<string, string>([
+    ['Record', 'Record'],
+    ['Readonly', 'JsObj'],
+    ['Array', 'JsArray'],
+    ['Promise', 'Future'],
+])
+
 const visitPrimitive = (node: Node | Node[], type: string): string =>
     Array.isArray(node) ? node.map(() => type).join(', ') : type
 export const numberVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'int')
@@ -22,6 +29,33 @@ export const stringVisitor = (node: Node | Node[]): string => visitPrimitive(nod
 export const booleanVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'bool')
 
 export const undefinedVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'undefined')
+
+const handleIdentifier = (node: Identifier): string => {
+    const typeName = node.getText()
+    if (typesMap.has(typeName)) {
+        return typesMap.get(typeName)!
+    }
+    return isReservedWord(typeName) ? `Js${typeName}` : typeName
+}
+export const identifierVisitor = (node: Node | Node[]): string => {
+    if (Array.isArray(node)) {
+        return node.map((n) => handleIdentifier(n as Identifier)).join(', ')
+    }
+    return handleIdentifier(node as Identifier)
+}
+
+const handleRef = (ref: TypeReferenceNode): string => {
+    const typeName = visit(ref.getTypeName())
+    if (ref.getTypeArguments().length) {
+    }
+}
+export const typeReferenceVisitor = (node: Node | Node[]): string => {
+    if (Array.isArray(node)) {
+        return node.map((n) => handleRef(n as TypeReferenceNode)).join(', ')
+    }
+    return handleRef(node as TypeReferenceNode)
+}
+
 export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
