@@ -24,6 +24,7 @@ const visitPrimitive = (node: Node | Node[], type: string): string =>
     Array.isArray(node) ? node.map(() => type).join(', ') : type
 export const numberVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'int')
 
+export const unknownVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'any')
 export const stringVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'cstring')
 
 export const booleanVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'bool')

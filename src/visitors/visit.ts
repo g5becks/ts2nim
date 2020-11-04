@@ -18,6 +18,7 @@ import {
     undefinedVisitor,
     typeReferenceVisitor,
     identifierVisitor,
+    unknownVisitor,
 } from './datatypes'
 
 type DoneEvent = { message: 'Done' }
@@ -182,7 +183,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TypeKeyword, pass], // pass
     [SyntaxKind.UndefinedKeyword, undefinedVisitor], // pass
     [SyntaxKind.UniqueKeyword, pass], // pass
-    [SyntaxKind.UnknownKeyword, pass], // pass
+    [SyntaxKind.UnknownKeyword, unknownVisitor], // pass
     [SyntaxKind.FromKeyword, pass], // pass
     [SyntaxKind.GlobalKeyword, pass], // pass
     [SyntaxKind.BigIntKeyword, pass], // pass

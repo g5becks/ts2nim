@@ -16,7 +16,7 @@ console.log(
         .map((n) => {
             const v = n as TypeReferenceNode
             console.log(v.getTypeName().getKindName())
-            return v.getTypeArguments().map((c) => c.getText())
+            return v.getTypeArguments().map((c) => c.getKindName())
         }),
 )
 /*
