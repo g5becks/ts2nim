@@ -114,8 +114,8 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 /** Visitor for SyntaxKind.TypeParameter */
 const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
-    const paramName = buildTypeName(param.getText())
-    return typeof param.getConstraint() !== 'undefined'
+    const paramName = buildTypeName(param.getName())
+    return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
         : `${paramName}: ${visit(param.getConstraintOrThrow())}`
 }
