@@ -183,7 +183,9 @@ const typeReferenceVisitor = (node: Node): string => {
     return buildTypeName(typeName)
 }
 
-const handlerLiteral = (lit: LiteralTypeNode): string => {
+/** Visitor for SyntaxKind. */
+export const literalTypeVisitor = (node: Node): string => {
+    const lit = node as LiteralTypeNode
     const litType = lit.getLiteral()
     if (litType instanceof NullLiteral) {
         return 'null'
@@ -193,12 +195,6 @@ const handlerLiteral = (lit: LiteralTypeNode): string => {
     }
 
     return 'any'
-}
-export const literalTypeVisitor = (node: Node): string => {
-    if (Array.isArray(node)) {
-        return node.map((n) => handlerLiteral(n as LiteralTypeNode)).join(', ')
-    }
-    return handlerLiteral(node as LiteralTypeNode)
 }
 
 const emitter = new events.EventEmitter()
