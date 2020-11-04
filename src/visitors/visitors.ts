@@ -15,9 +15,10 @@ import {
     TypeNode,
     TypeParameterDeclaration,
     UnionTypeNode,
+    VariableDeclaration,
+    VariableDeclarationKind,
 } from 'ts-morph'
 
-import { variableVisitor } from './variable'
 import {
     booleanVisitor,
     identifierVisitor,
@@ -29,7 +30,7 @@ import {
     undefinedVisitor,
     unknownVisitor,
 } from './datatypes'
-import { buildTypeName, capitalize, hasTypeParam, isReservedWord } from './utils'
+import { buildTypeName, buildVarName, capitalize, hasTypeParam, isReservedWord } from './utils'
 
 type DoneEvent = { message: 'Done' }
 
@@ -141,12 +142,19 @@ const typeParamVisitor = (node: Node): string => {
 }
 
 /** Visitor for SyntaxKind.UnionType */
-export const unionTypeVisitor = (node: Node): string =>
+const unionTypeVisitor = (node: Node): string =>
     (node as UnionTypeNode)
         .getTypeNodes()
         .map((n) => visit(n))
         .join(' | ')
 
+/** Visitor for SyntaxKind.VariableDeclaration */
+const variableVisitor = (node: Node): string => {
+    const v = node as VariableDeclaration
+    const k = v?.getVariableStatement()?.getDeclarationKind()
+    const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
+    return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
+}
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
