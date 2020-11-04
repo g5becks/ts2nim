@@ -57,17 +57,21 @@ const classVisitor = (node: Node | Node[]): string => {
 /** Visitor for SyntaxKind.FunctionDeclaration */
 const functionVisitor = (node: Node | Node[]): string => {
     const func = node as FunctionDeclaration
-    const funcName = func.getName()
-    if (!funcName) {
+    if (!func.getName()) {
         return makeDataType(func.getType())
     }
-    const name = isReservedWord(funcName) ? `js${capitalize(funcName)}` : funcName
-    const params = func.getParameters()
-    const importParams = params.map((p) => (p.isRestParameter() ? '...#' : '#'))
-    const builtParams = visit(params)
-    return `proc ${name}*${visit(func.getTypeParameters())}(${builtParams}): ${visit(
-        func.getReturnTypeNodeOrThrow(),
-    )} {.importcpp:"${funcName}(${importParams})", nodecl.}`
+    const name = buildVarName(func.getName()!)
+    const params = func
+        .getParameters()
+        .map((param) => visit(param))
+        .join(', ')
+    const importParams = func.getParameters().map((p) => (p.isRestParameter() ? '...#' : '#'))
+    const typeParams = func
+        .getTypeParameters()
+        .map((p) => visit(p))
+        .join(', ')
+    const returnType = func.getReturnTypeNode() ? visit(func.getReturnTypeNodeOrThrow()) : 'any'
+    return `proc ${name}*${typeParams}(${params}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
@@ -539,10 +543,10 @@ emitter.addListener('Done', () => {
     process.exit()
 })
 
-const handleNode = (n: Node | TypeNode, parentName?: string): string => {
-    if (visitorMap.has(n.getKind())) {
+export const visit = (node: Node | TypeNode, parentName?: string): string => {
+    if (visitorMap.has(node.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const data = visitorMap.get(n.getKind())!(n, parentName)
+        const data = visitorMap.get(node.getKind())!(node, parentName)
         if (!isDone(data)) {
             return data
         } else {
@@ -553,16 +557,8 @@ const handleNode = (n: Node | TypeNode, parentName?: string): string => {
     return ''
 }
 
-export const visit = (node: Node | Node[] | TypeNode | TypeNode[], parentName?: string): string => {
-    let result = ''
-    if (Array.isArray(node)) {
-        for (const n of node) {
-            result = result.concat(handleNode(n, parentName))
-        }
-    } else {
-        return handleNode(node, parentName)
-    }
-    return result
-}
-
-export const generate = (file: SourceFile): string => visit(file.forEachChildAsArray())
+export const generate = (file: SourceFile): string =>
+    file
+        .forEachChildAsArray()
+        .map((child) => visit(child))
+        .join()
