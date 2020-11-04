@@ -14,9 +14,9 @@ import {
     TypeLiteralNode,
     TypeNode,
     TypeParameterDeclaration,
+    UnionTypeNode,
 } from 'ts-morph'
 
-import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
 import {
     booleanVisitor,
@@ -132,13 +132,20 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.TypeParameter */
-export const typeParamVisitor = (node: Node): string => {
+const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getText().trim())
     return typeof param.getConstraint() !== 'undefined'
         ? `[${paramName}]`
         : `[${paramName}: ${visit(param.getConstraintOrThrow())}]`
 }
+
+/** Visitor for SyntaxKind.UnionType */
+export const unionTypeVisitor = (node: Node): string =>
+    (node as UnionTypeNode)
+        .getTypeNodes()
+        .map((n) => visit(n))
+        .join(' | ')
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
