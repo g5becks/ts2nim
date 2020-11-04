@@ -37,7 +37,7 @@ import {
     hasTypeParam,
     isReservedWord,
     buildTypeParams,
-    buildParams
+    buildParams, buildReturnType
 } from './utils'
 
 type DoneEvent = { message: 'Done' }
@@ -68,10 +68,7 @@ const functionVisitor = (node: Node | Node[]): string => {
         return makeDataType(func.getType())
     }
     const name = buildVarName(func.getName()!)
-    const importParams = func.getParameters().map((p) => (p.isRestParameter() ? '...#' : '#'))
-
-    const returnType = func.getReturnTypeNode() ? visit(func.getReturnTypeNodeOrThrow()) : 'any'
-    return `proc ${name}*${buildTypeParams(func)}(${buildParams(node)}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
+    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)} {.importcpp:"${name}(${importParams})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */

@@ -115,3 +115,14 @@ export const buildParams = (node: FunctionTypeNode | FunctionDeclaration): strin
         .getParameters()
         .map((param) => visit(param))
         .join(', ')
+
+// Builds return type for functionLike nodes
+export const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration): string =>
+    node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow()) : 'any'
+
+// Builds FFI params for functionLike nodes
+export const buildFFIParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
+    node
+        .getParameters()
+        .map((p) => (p.isRestParameter() ? '...#' : '#'))
+        .join(', ')
