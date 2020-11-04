@@ -84,12 +84,9 @@ const methodSignatureVisitor = (node: Node | Node[], parentName?: string): strin
 /** Visitor for SyntaxKind.Parameter */
 const parameterVisitor = (node: Node): string => {
     const param = node as ParameterDeclaration
-    const name = !isReservedWord(param.getName()) ? param.getName() : `js${capitalize(param.getName())}`
-    const paramType = makeDataType(param.getType())
-    if (param.isRestParameter()) {
-        return `${name}: varargs[${paramType}]`
-    }
-    return `${name}: ${paramType}`
+    const name = buildVarName(param.getName())
+    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow()) : 'any'
+    return param.isRestParameter() ? `${name}: varargs[${paramType}]` : `${name}: ${paramType}`
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
