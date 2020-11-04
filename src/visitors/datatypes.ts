@@ -48,6 +48,7 @@ export const identifierVisitor = (node: Node | Node[]): string => {
 const handleRef = (ref: TypeReferenceNode): string => {
     const typeName = visit(ref.getTypeName())
     if (ref.getTypeArguments().length) {
+        return build
     }
 }
 export const typeReferenceVisitor = (node: Node | Node[]): string => {
