@@ -18,7 +18,7 @@ import {
     VariableDeclarationKind,
 } from 'ts-morph'
 
-import { makeDataType, typeReferenceVisitor } from './datatypes'
+import { typeReferenceVisitor } from './datatypes'
 import {
     buildFFIParams,
     buildParams,
@@ -26,9 +26,7 @@ import {
     buildTypeName,
     buildTypeParams,
     buildVarName,
-    capitalize,
     hasTypeParam,
-    isReservedWord,
 } from './utils'
 import { visitorMap } from './visitormap'
 
@@ -99,14 +97,10 @@ const propertySignatureVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
 const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
-    const name = buildTypeName(alias)
-    const params = alias
-        .getTypeParameters()
-        .map((param) => visit(param))
-        .join(', ')
-    const typeParams = params.length ? `[${params}]` : ''
-
-    return `type ${name}*${typeParams} = ref object`
+    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow()) : ''
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias)} = ref object
+                ${props}
+                `
 }
 
 /** Visitor for SyntaxKind.TypeLiteral */

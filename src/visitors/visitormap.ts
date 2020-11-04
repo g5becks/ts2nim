@@ -19,6 +19,7 @@ import {
     NodeVisitor,
     parameterVisitor,
     pass,
+    propertySignatureVisitor,
     typeAliasVisitor,
     typeLiteralVisitor,
     typeParamVisitor,

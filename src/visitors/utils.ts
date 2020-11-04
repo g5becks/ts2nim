@@ -102,7 +102,9 @@ export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | st
 }
 
 // Builds type params for nodes that accept them.
-export const buildTypeParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
+export const buildTypeParams = (
+    node: FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
+): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
