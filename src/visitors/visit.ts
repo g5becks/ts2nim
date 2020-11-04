@@ -12,6 +12,7 @@ import { typeParamVisitor } from './typeparams'
 import { typeReferenceVisitor } from './typeref'
 import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
+import { booleanVisitor, numberVisitor, stringVisitor } from './datatypes'
 
 type DoneEvent = { message: 'Done' }
 
@@ -155,7 +156,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.AnyKeyword, pass], // pass
     [SyntaxKind.AsyncKeyword, pass], // pass
     [SyntaxKind.AwaitKeyword, pass], // pass
-    [SyntaxKind.BooleanKeyword, pass], // pass
+    [SyntaxKind.BooleanKeyword, booleanVisitor], // pass
     [SyntaxKind.ConstructorKeyword, pass], // pass
     [SyntaxKind.DeclareKeyword, pass], // pass
     [SyntaxKind.GetKeyword, pass], // pass
@@ -167,10 +168,10 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.NeverKeyword, pass], // pass
     [SyntaxKind.ReadonlyKeyword, pass], // pass
     [SyntaxKind.RequireKeyword, pass], // pass
-    [SyntaxKind.NumberKeyword, pass], // pass
+    [SyntaxKind.NumberKeyword, numberVisitor],
     [SyntaxKind.ObjectKeyword, pass], // pass
     [SyntaxKind.SetKeyword, pass], // pass
-    [SyntaxKind.StringKeyword, pass], // pass
+    [SyntaxKind.StringKeyword, stringVisitor], // pass
     [SyntaxKind.SymbolKeyword, pass], // pass
     [SyntaxKind.TypeKeyword, pass], // pass
     [SyntaxKind.UndefinedKeyword, pass], // pass

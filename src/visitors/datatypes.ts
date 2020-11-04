@@ -1,4 +1,4 @@
-import { Type } from 'ts-morph'
+import { Node, Type } from 'ts-morph'
 import { isReservedWord } from './utils'
 import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
@@ -13,6 +13,15 @@ const primitiveMap = new Map<string, string>([
     ['never', 'never'],
 ])
 
+const visitPrimitive = (node: Node | Node[], type: string): string =>
+    Array.isArray(node) ? node.map(() => type).join(', ') : type
+export const numberVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'int')
+
+export const stringVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'cstring')
+
+export const booleanVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'bool')
+
+export const undefinedVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'undefined')
 export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -69,11 +78,17 @@ export const makeDataType = (type: Type): string => {
         }
     }
 
+    if (type.getText().startsWith('Record<')) {
+        return `Record[${type
+            .getTypeArguments()
+            .map((arg) => makeDataType(arg))
+            .join(', ')}]`
+    }
     if (type.getText().startsWith('Promise<')) {
         return `Future[${type
             .getTypeArguments()
             .map((arg) => makeDataType(arg))
-            .join(',')}]`
+            .join(', ')}]`
     }
 
     if (type.isArray()) {

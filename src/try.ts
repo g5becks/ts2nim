@@ -1,12 +1,18 @@
-import { Project } from 'ts-morph'
-import { functionVisitor } from './visitors/function'
+import { Project, UnionTypeNode } from 'ts-morph'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
 
-const func = file.getFunctions()[0]
+//const func = file.getFunctions()[0]
 
+const union = file.getTypeAliases()[1]
+
+const node = union.getTypeNodeOrThrow() as UnionTypeNode
+console.log(node.getTypeNodes().map((n) => n.getKindName()))
+/*
+console.log(unionTypeVisitor(union.getTypeNodeOrThrow()))
 console.log(functionVisitor(func))
+*/
 
 //file.forEachChildAsArray().forEach((child) => console.log(child.getKindName()))
