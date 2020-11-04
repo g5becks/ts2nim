@@ -1,4 +1,4 @@
-import {Identifier, LiteralTypeNode, Node, Type, TypeReferenceNode} from 'ts-morph'
+import { BooleanLiteral, Identifier, LiteralTypeNode, Node, NullLiteral, Type, TypeReferenceNode } from 'ts-morph'
 import { buildTypeName, isReservedWord } from './utils'
 import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
@@ -60,10 +60,21 @@ export const typeReferenceVisitor = (node: Node | Node[]): string => {
 }
 
 const handlerLiteral = (lit: LiteralTypeNode): string => {
-    lit.getLiteral()
+    const litType = lit.getLiteral()
+    if (litType instanceof NullLiteral) {
+        return 'null'
+    }
+    if (litType instanceof BooleanLiteral) {
+        return litType.getLiteralValue() ? '`true`' : '`false`'
+    }
+
+    return 'any'
 }
-export const literalTypeVisitor(node: Node| Node[]): string => {
-    const n = node as LiteralTypeNode
+export const literalTypeVisitor = (node: Node | Node[]): string => {
+    if (Array.isArray(node)) {
+        return node.map((n) => handlerLiteral(n as LiteralTypeNode)).join(', ')
+    }
+    return handlerLiteral(node as LiteralTypeNode)
 }
 
 export const makeDataType = (type: Type): string => {

@@ -223,7 +223,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TypeOperator, pass], // TODO create visitor
     [SyntaxKind.IndexedAccessType, pass], // TODO create visitor
     [SyntaxKind.MappedType, pass], // TODO create visitor
-    [SyntaxKind.LiteralType, literalTypeVisitor], // TODO create visitor
+    [SyntaxKind.LiteralType, literalTypeVisitor],
     [SyntaxKind.NamedTupleMember, pass], // TODO create visitor
     [SyntaxKind.ImportType, pass], // TODO create visitor
     [SyntaxKind.ObjectBindingPattern, pass], // TODO create visitor

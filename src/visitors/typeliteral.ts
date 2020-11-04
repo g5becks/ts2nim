@@ -11,5 +11,6 @@ export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): st
     if (parentName) {
         return properties + methods
     }
+    console.log(properties)
     return `JsObj[tuple[${properties}]]`
 }
