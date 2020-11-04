@@ -112,7 +112,11 @@ const propertySignatureVisitor = (node: Node): string => {
 const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
     const name = buildTypeName(alias)
-    const typeParams = hasTypeParam(alias) ? visit(alias.getTypeParameters()) : ''
+    const params = alias
+        .getTypeParameters()
+        .map((param) => visit(param))
+        .join(', ')
+    const typeParams = params.length ? `[${params}]` : ''
 
     return `type ${name}*${typeParams} = ref object`
 }
