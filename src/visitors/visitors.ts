@@ -74,12 +74,10 @@ const functionTypeVisitor = (node: Node | Node[]): string => {
 /** Visitor for SyntaxKind.MethodSignature */
 const methodSignatureVisitor = (node: Node | Node[], parentName?: string): string => {
     const method = node as MethodSignature
-    const placeHolders = method.getParameters().map(() => '#')
-    return `method ${method.getName()}*${visit(method.getTypeParameters())}(self: ${parentName}, ${visit(
-        method.getParameters(),
-    )}): ${makeDataType(method.getReturnType())} {.importcpp: """#.${method.getName()}(${placeHolders.join(
-        ', ',
-    )})""", nodecl .}
+    const name = buildVarName(method.getName())
+    return `method ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
+        method,
+    )} {.importcpp: """#.${name}(${buildFFIParams(method)})""", nodecl .}
     `
 }
 
