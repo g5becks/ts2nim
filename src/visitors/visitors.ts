@@ -199,4 +199,5 @@ export {
     pass,
     DoneEvent,
     visit,
+    propertySignatureVisitor,
 }
