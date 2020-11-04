@@ -198,4 +198,5 @@ export {
     arrayTypeVisitor,
     pass,
     DoneEvent,
+    visit,
 }
