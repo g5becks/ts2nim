@@ -1,11 +1,15 @@
 import events from 'events'
 import {
     ArrayTypeNode,
+    BooleanLiteral,
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
+    Identifier,
+    LiteralTypeNode,
     MethodSignature,
     Node,
+    NullLiteral,
     ParameterDeclaration,
     PropertySignature,
     SourceFile,
@@ -13,12 +17,13 @@ import {
     TypeLiteralNode,
     TypeNode,
     TypeParameterDeclaration,
+    TypeReferenceNode,
     UnionTypeNode,
     VariableDeclaration,
     VariableDeclarationKind,
 } from 'ts-morph'
 
-import { typeReferenceVisitor } from './datatypes'
+import { typeReferenceVisitor, typesMap } from './datatypes'
 import {
     buildFFIParams,
     buildParams,
@@ -27,6 +32,7 @@ import {
     buildTypeParams,
     buildVarName,
     hasTypeParam,
+    isReservedWord,
 } from './utils'
 import { visitorMap } from './visitormap'
 
@@ -122,7 +128,7 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 /** Visitor for SyntaxKind.TypeParameter */
 const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
-    const paramName = buildTypeName(param.getText().trim())
+    const paramName = buildTypeName(param.getText())
     return typeof param.getConstraint() !== 'undefined'
         ? `${paramName}`
         : `${paramName}: ${visit(param.getConstraintOrThrow())}`
@@ -141,6 +147,60 @@ const variableVisitor = (node: Node): string => {
     const k = v?.getVariableStatement()?.getDeclarationKind()
     const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
     return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
+}
+
+/** Visitor for SyntaxKind. */
+const numberVisitor = (_node: Node): string => 'int'
+
+/** Visitor for SyntaxKind. */
+const unknownVisitor = (_node: Node): string => 'any'
+
+/** Visitor for SyntaxKind. */
+const stringVisitor = (_node: Node): string => 'cstring'
+
+/** Visitor for SyntaxKind. */
+const booleanVisitor = (_node: Node): string => 'bool'
+
+/** Visitor for SyntaxKind. */
+const undefinedVisitor = (_node: Node): string => 'undefined'
+
+/** Visitor for SyntaxKind. */
+const identifierVisitor = (node: Node): string => {
+    const name = node.getText().trim()
+    return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
+}
+
+const handleRef = (ref: TypeReferenceNode): string => {
+    const typeName = visit(ref.getTypeName())
+    if (ref.getTypeArguments().length) {
+        return `${buildTypeName(typeName)}[${visit(ref.getTypeArguments())}]`
+    }
+    return buildTypeName(typeName)
+}
+
+const typeReferenceVisitor = (node: Node | Node[]): string => {
+    if (Array.isArray(node)) {
+        return node.map((n) => handleRef(n as TypeReferenceNode)).join(', ')
+    }
+    return handleRef(node as TypeReferenceNode)
+}
+
+const handlerLiteral = (lit: LiteralTypeNode): string => {
+    const litType = lit.getLiteral()
+    if (litType instanceof NullLiteral) {
+        return 'null'
+    }
+    if (litType instanceof BooleanLiteral) {
+        return litType.getLiteralValue() ? '`true`' : '`false`'
+    }
+
+    return 'any'
+}
+export const literalTypeVisitor = (node: Node | Node[]): string => {
+    if (Array.isArray(node)) {
+        return node.map((n) => handlerLiteral(n as LiteralTypeNode)).join(', ')
+    }
+    return handlerLiteral(node as LiteralTypeNode)
 }
 
 const emitter = new events.EventEmitter()
@@ -188,4 +248,10 @@ export {
     DoneEvent,
     visit,
     propertySignatureVisitor,
+    numberVisitor,
+    undefinedVisitor,
+    stringVisitor,
+    unknownVisitor,
+    booleanVisitor,
+    identifierVisitor,
 }

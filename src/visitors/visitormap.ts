@@ -1,15 +1,5 @@
 import { Node, SyntaxKind } from 'ts-morph'
 import {
-    booleanVisitor,
-    identifierVisitor,
-    literalTypeVisitor,
-    numberVisitor,
-    stringVisitor,
-    typeReferenceVisitor,
-    undefinedVisitor,
-    unknownVisitor,
-} from './datatypes'
-import {
     arrayTypeVisitor,
     classVisitor,
     DoneEvent,
@@ -25,6 +15,14 @@ import {
     typeParamVisitor,
     unionTypeVisitor,
     variableVisitor,
+    booleanVisitor,
+    identifierVisitor,
+    literalTypeVisitor,
+    numberVisitor,
+    stringVisitor,
+    typeReferenceVisitor,
+    undefinedVisitor,
+    unknownVisitor,
 } from './visitors'
 
 export const visitorMap = new Map<number, NodeVisitor>([

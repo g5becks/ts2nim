@@ -1,6 +1,7 @@
-import { BooleanLiteral, Identifier, LiteralTypeNode, Node, NullLiteral, Type, TypeReferenceNode } from 'ts-morph'
-import { buildTypeName, isReservedWord } from './utils'
+import { Type } from 'ts-morph'
+import { isReservedWord } from './utils'
 import { visit } from './visitors'
+
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],
@@ -19,63 +20,6 @@ export const typesMap = new Map<string, string>([
     ['Array', 'JsArray'],
     ['Promise', 'Future'],
 ])
-
-const visitPrimitive = (node: Node | Node[], type: string): string =>
-    Array.isArray(node) ? node.map(() => type).join(', ') : type
-export const numberVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'int')
-
-export const unknownVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'any')
-export const stringVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'cstring')
-
-export const booleanVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'bool')
-
-export const undefinedVisitor = (node: Node | Node[]): string => visitPrimitive(node, 'undefined')
-
-const handleIdentifier = (node: Identifier): string => {
-    const typeName = node.getText()
-    if (typesMap.has(typeName)) {
-        return typesMap.get(typeName)!
-    }
-    return isReservedWord(typeName) ? `Js${typeName}` : typeName
-}
-export const identifierVisitor = (node: Node | Node[]): string => {
-    if (Array.isArray(node)) {
-        return node.map((n) => handleIdentifier(n as Identifier)).join(', ')
-    }
-    return handleIdentifier(node as Identifier)
-}
-
-const handleRef = (ref: TypeReferenceNode): string => {
-    const typeName = visit(ref.getTypeName())
-    if (ref.getTypeArguments().length) {
-        return `${buildTypeName(typeName)}[${visit(ref.getTypeArguments())}]`
-    }
-    return buildTypeName(typeName)
-}
-export const typeReferenceVisitor = (node: Node | Node[]): string => {
-    if (Array.isArray(node)) {
-        return node.map((n) => handleRef(n as TypeReferenceNode)).join(', ')
-    }
-    return handleRef(node as TypeReferenceNode)
-}
-
-const handlerLiteral = (lit: LiteralTypeNode): string => {
-    const litType = lit.getLiteral()
-    if (litType instanceof NullLiteral) {
-        return 'null'
-    }
-    if (litType instanceof BooleanLiteral) {
-        return litType.getLiteralValue() ? '`true`' : '`false`'
-    }
-
-    return 'any'
-}
-export const literalTypeVisitor = (node: Node | Node[]): string => {
-    if (Array.isArray(node)) {
-        return node.map((n) => handlerLiteral(n as LiteralTypeNode)).join(', ')
-    }
-    return handlerLiteral(node as LiteralTypeNode)
-}
 
 export const makeDataType = (type: Type): string => {
     if (primitiveMap.has(type.getText())) {
