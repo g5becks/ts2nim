@@ -5,7 +5,7 @@ import { visit } from './visit'
 const handleProperty = (prop: PropertySignature): string => {
     const name = prop.getName()
     const propName = isReservedWord(name) ? `js${capitalize(name)}` : name
-    return `${propName}: ${visit(prop.getTypeNodeOrThrow())}, `
+    return `${propName}: ${visit(prop.getTypeNodeOrThrow())}`
 }
 export const propertySignatureVisitor = (node: Node | Node[]): string => {
     if (Array.isArray(node)) {
