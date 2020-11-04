@@ -170,19 +170,17 @@ const identifierVisitor = (node: Node): string => {
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
-const handleRef = (ref: TypeReferenceNode): string => {
+/** Visitor for SyntaxKind. */
+const typeReferenceVisitor = (node: Node): string => {
+    const ref = node as TypeReferenceNode
     const typeName = visit(ref.getTypeName())
     if (ref.getTypeArguments().length) {
-        return `${buildTypeName(typeName)}[${visit(ref.getTypeArguments())}]`
+        return `${buildTypeName(typeName)}[${ref
+            .getTypeArguments()
+            .map((n) => visit(n))
+            .join(', ')}]`
     }
     return buildTypeName(typeName)
-}
-
-const typeReferenceVisitor = (node: Node | Node[]): string => {
-    if (Array.isArray(node)) {
-        return node.map((n) => handleRef(n as TypeReferenceNode)).join(', ')
-    }
-    return handleRef(node as TypeReferenceNode)
 }
 
 const handlerLiteral = (lit: LiteralTypeNode): string => {
@@ -196,7 +194,7 @@ const handlerLiteral = (lit: LiteralTypeNode): string => {
 
     return 'any'
 }
-export const literalTypeVisitor = (node: Node | Node[]): string => {
+export const literalTypeVisitor = (node: Node): string => {
     if (Array.isArray(node)) {
         return node.map((n) => handlerLiteral(n as LiteralTypeNode)).join(', ')
     }
