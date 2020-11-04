@@ -92,9 +92,8 @@ const parameterVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.PropertySignature */
 const propertySignatureVisitor = (node: Node): string => {
     const prop = node as PropertySignature
-    const name = prop.getName()
-    const propName = isReservedWord(name) ? `js${capitalize(name)}` : name
-    return `${propName}: ${visit(prop.getTypeNodeOrThrow())}`
+    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
+    return `${buildVarName(prop.getName())}: ${propType}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
