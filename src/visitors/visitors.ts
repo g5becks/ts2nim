@@ -30,7 +30,15 @@ import {
     undefinedVisitor,
     unknownVisitor,
 } from './datatypes'
-import {buildTypeName, buildVarName, capitalize, hasTypeParam, isReservedWord, makeTypeParams} from './utils'
+import {
+    buildTypeName,
+    buildVarName,
+    capitalize,
+    hasTypeParam,
+    isReservedWord,
+    buildTypeParams,
+    buildParams
+} from './utils'
 
 type DoneEvent = { message: 'Done' }
 
@@ -60,14 +68,10 @@ const functionVisitor = (node: Node | Node[]): string => {
         return makeDataType(func.getType())
     }
     const name = buildVarName(func.getName()!)
-    const params = func
-        .getParameters()
-        .map((param) => visit(param))
-        .join(', ')
     const importParams = func.getParameters().map((p) => (p.isRestParameter() ? '...#' : '#'))
 
     const returnType = func.getReturnTypeNode() ? visit(func.getReturnTypeNodeOrThrow()) : 'any'
-    return `proc ${name}*${makeTypeParams(func)}(${params}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
+    return `proc ${name}*${buildTypeParams(func)}(${buildParams(node)}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */

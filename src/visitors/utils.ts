@@ -100,11 +100,18 @@ export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | st
     return isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
 }
 
-// Builds type params for types that accept them.
-export const makeTypeParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
+// Builds type params for nodes that accept them.
+export const buildTypeParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
               .map((p) => visit(p))
               .join(', ')}]`
         : ''
+
+// Builds function parameters for functionLike nodes
+export const buildParams = (node: FunctionTypeNode | FunctionDeclaration): string =>
+    node
+        .getParameters()
+        .map((param) => visit(param))
+        .join(', ')
