@@ -1,4 +1,4 @@
-declare function of<T>(...items: T[]): T[]
+declare function of<T extends { name: string }>(...items: T[]): T[]
 type SomePerson = {
     name: string
     age: number

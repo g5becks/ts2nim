@@ -13,9 +13,9 @@ import {
     TypeAliasDeclaration,
     TypeLiteralNode,
     TypeNode,
+    TypeParameterDeclaration,
 } from 'ts-morph'
 
-import { typeParamVisitor } from './typeparams'
 import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
 import {
@@ -89,7 +89,7 @@ const methodSignatureVisitor = (node: Node | Node[], parentName?: string): strin
 }
 
 /** Visitor for SyntaxKind.Parameter */
-export const parameterVisitor = (node: Node | Node[]): string => {
+const parameterVisitor = (node: Node): string => {
     const param = node as ParameterDeclaration
     const name = !isReservedWord(param.getName()) ? param.getName() : `js${capitalize(param.getName())}`
     const paramType = makeDataType(param.getType())
@@ -100,7 +100,7 @@ export const parameterVisitor = (node: Node | Node[]): string => {
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
-export const propertySignatureVisitor = (node: Node | Node[]): string => {
+const propertySignatureVisitor = (node: Node): string => {
     const prop = node as PropertySignature
     const name = prop.getName()
     const propName = isReservedWord(name) ? `js${capitalize(name)}` : name
@@ -108,7 +108,7 @@ export const propertySignatureVisitor = (node: Node | Node[]): string => {
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
-export const typeAliasVisitor = (node: Node | Node[]): string => {
+const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
     const name = buildTypeName(alias)
     const typeParams = hasTypeParam(alias) ? visit(alias.getTypeParameters()) : ''
@@ -117,7 +117,7 @@ export const typeAliasVisitor = (node: Node | Node[]): string => {
 }
 
 /** Visitor for SyntaxKind.TypeLiteral */
-export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): string => {
+const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
     let methods = ''
     if (n.getMethods().length) {
@@ -129,6 +129,15 @@ export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): st
     }
     console.log(properties)
     return `JsObj[tuple[${properties}]]`
+}
+
+/** Visitor for SyntaxKind.TypeParameter */
+export const typeParamVisitor = (node: Node): string => {
+    const param = node as TypeParameterDeclaration
+    const paramName = buildTypeName(param.getText().trim())
+    return typeof param.getConstraint() !== 'undefined'
+        ? `[${paramName}]`
+        : `[${paramName}: ${visit(param.getConstraintOrThrow())}]`
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
