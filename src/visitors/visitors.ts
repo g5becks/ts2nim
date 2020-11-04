@@ -5,7 +5,6 @@ import {
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
-    Identifier,
     LiteralTypeNode,
     MethodSignature,
     Node,
@@ -23,16 +22,15 @@ import {
     VariableDeclarationKind,
 } from 'ts-morph'
 
-import { typeReferenceVisitor, typesMap } from './datatypes'
+import { typesMap } from './datatypes'
 import {
-    buildFFIParams,
+    buildFFiParams,
     buildParams,
     buildReturnType,
     buildTypeName,
     buildTypeParams,
     buildVarName,
     hasTypeParam,
-    isReservedWord,
 } from './utils'
 import { visitorMap } from './visitormap'
 
@@ -66,7 +64,7 @@ const functionVisitor = (node: Node): string => {
     const name = buildVarName(func.getName()!)
     return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(
         func,
-    )} {.importcpp:"${name}(${buildFFIParams(func)})", nodecl.}`
+    )} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
@@ -81,7 +79,7 @@ const methodSignatureVisitor = (node: Node | Node[], parentName?: string): strin
     const name = buildVarName(method.getName())
     return `method ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
         method,
-    )} {.importcpp: """#.${name}(${buildFFIParams(method)})""", nodecl .}
+    )} {.importcpp: """#.${name}(${buildFFiParams(method)})""", nodecl .}
     `
 }
 
@@ -184,7 +182,7 @@ const typeReferenceVisitor = (node: Node): string => {
 }
 
 /** Visitor for SyntaxKind. */
-export const literalTypeVisitor = (node: Node): string => {
+const literalTypeVisitor = (node: Node): string => {
     const lit = node as LiteralTypeNode
     const litType = lit.getLiteral()
     if (litType instanceof NullLiteral) {
@@ -248,4 +246,5 @@ export {
     unknownVisitor,
     booleanVisitor,
     identifierVisitor,
+    literalTypeVisitor,
 }

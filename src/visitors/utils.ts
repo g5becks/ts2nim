@@ -124,7 +124,7 @@ export const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration | M
     node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow()) : 'any'
 
 // Builds FFI params for functionLike nodes
-export const buildFFIParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
+export const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
     node
         .getParameters()
         .map((p) => (p.isRestParameter() ? '...#' : '#'))
