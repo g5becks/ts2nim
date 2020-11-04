@@ -1,11 +1,20 @@
 import events from 'events'
-import { ArrayTypeNode, ClassDeclaration, FunctionDeclaration, Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
-import { functionTypeVisitor } from './functiontype'
-import { methodSignatureVisitor } from './method'
-import { parameterVisitor } from './parameter'
-import { propertySignatureVisitor } from './property'
-import { typeAliasVisitor } from './typealias'
-import { typeLiteralVisitor } from './typeliteral'
+import {
+    ArrayTypeNode,
+    ClassDeclaration,
+    FunctionDeclaration,
+    FunctionTypeNode,
+    MethodSignature,
+    Node,
+    ParameterDeclaration,
+    PropertySignature,
+    SourceFile,
+    SyntaxKind,
+    TypeAliasDeclaration,
+    TypeLiteralNode,
+    TypeNode,
+} from 'ts-morph'
+
 import { typeParamVisitor } from './typeparams'
 import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
@@ -31,8 +40,10 @@ type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | Done
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | TypeNode) => ''
 
+/** Visitor for SyntaxKind.ArrayType */
 const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
 
+/** Visitor for SyntaxKind.ClassDeclaration */
 const classVisitor = (node: Node | Node[]): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
@@ -42,6 +53,7 @@ const classVisitor = (node: Node | Node[]): string => {
     return name
 }
 
+/** Visitor for SyntaxKind.FunctionDeclaration */
 const functionVisitor = (node: Node | Node[]): string => {
     const func = node as FunctionDeclaration
     const funcName = func.getName()
@@ -55,6 +67,68 @@ const functionVisitor = (node: Node | Node[]): string => {
     return `proc ${name}*${visit(func.getTypeParameters())}(${builtParams}): ${visit(
         func.getReturnTypeNodeOrThrow(),
     )} {.importcpp:"${funcName}(${importParams})", nodecl.}`
+}
+
+/** Visitor for SyntaxKind.FunctionType */
+export const functionTypeVisitor = (node: Node | Node[]): string => {
+    const signature = node as FunctionTypeNode
+    const returnType = makeDataType(signature.getReturnType())
+    return `proc${visit(signature.getTypeParameters())}(${visit(signature.getParameters())}): ${returnType}`
+}
+
+/** Visitor for SyntaxKind.MethodSignature */
+const methodSignatureVisitor = (node: Node | Node[], parentName?: string): string => {
+    const method = node as MethodSignature
+    const placeHolders = method.getParameters().map(() => '#')
+    return `method ${method.getName()}*${visit(method.getTypeParameters())}(self: ${parentName}, ${visit(
+        method.getParameters(),
+    )}): ${makeDataType(method.getReturnType())} {.importcpp: """#.${method.getName()}(${placeHolders.join(
+        ', ',
+    )})""", nodecl .}
+    `
+}
+
+/** Visitor for SyntaxKind.Parameter */
+export const parameterVisitor = (node: Node | Node[]): string => {
+    const param = node as ParameterDeclaration
+    const name = !isReservedWord(param.getName()) ? param.getName() : `js${capitalize(param.getName())}`
+    const paramType = makeDataType(param.getType())
+    if (param.isRestParameter()) {
+        return `${name}: varargs[${paramType}]`
+    }
+    return `${name}: ${paramType}`
+}
+
+/** Visitor for SyntaxKind.PropertySignature */
+export const propertySignatureVisitor = (node: Node | Node[]): string => {
+    const prop = node as PropertySignature
+    const name = prop.getName()
+    const propName = isReservedWord(name) ? `js${capitalize(name)}` : name
+    return `${propName}: ${visit(prop.getTypeNodeOrThrow())}`
+}
+
+/** Visitor for SyntaxKind.TypeAliasDeclaration */
+export const typeAliasVisitor = (node: Node | Node[]): string => {
+    const alias = node as TypeAliasDeclaration
+    const name = buildTypeName(alias)
+    const typeParams = hasTypeParam(alias) ? visit(alias.getTypeParameters()) : ''
+
+    return `type ${name}*${typeParams} = ref object`
+}
+
+/** Visitor for SyntaxKind.TypeLiteral */
+export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): string => {
+    const n = node as TypeLiteralNode
+    let methods = ''
+    if (n.getMethods().length) {
+        methods = visit(n.getMethods(), parentName)
+    }
+    const properties = visit(n.getProperties())
+    if (parentName) {
+        return properties + `\n` + methods
+    }
+    console.log(properties)
+    return `JsObj[tuple[${properties}]]`
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
