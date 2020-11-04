@@ -78,6 +78,11 @@ export const isReservedWord = (word: string): boolean => nimReserved.includes(wo
 
 export const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
 
+export const buildVarName = (v: string): string => {
+    const varName = v.trim()
+    return isReservedWord(varName) ? `js${capitalize(varName)}` : varName
+}
+
 export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | string): string => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (typeof node === 'string') {
