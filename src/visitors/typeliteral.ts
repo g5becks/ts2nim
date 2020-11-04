@@ -1,5 +1,5 @@
 import { Node, TypeLiteralNode } from 'ts-morph'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): string => {
     const n = node as TypeLiteralNode

@@ -1,5 +1,5 @@
 import { Node, UnionTypeNode } from 'ts-morph'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 const buildUnion = (union: UnionTypeNode): string => {
     const types = union.getTypeNodes().map((node) => visit(node))

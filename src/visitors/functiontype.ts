@@ -1,6 +1,6 @@
 import { FunctionTypeNode, Node } from 'ts-morph'
 import { makeDataType } from './datatypes'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 export const functionTypeVisitor = (node: Node | Node[]): string => {
     const signature = node as FunctionTypeNode

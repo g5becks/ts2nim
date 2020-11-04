@@ -1,7 +1,7 @@
 import { FunctionDeclaration, Node } from 'ts-morph'
 import { makeDataType } from './datatypes'
 import { capitalize, isReservedWord } from './utils'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 export const functionVisitor = (node: Node | Node[]): string => {
     const func = node as FunctionDeclaration

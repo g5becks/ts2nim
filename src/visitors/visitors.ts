@@ -1,6 +1,5 @@
 import events from 'events'
-import { Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
-import { arrayTypeVisitor } from './arraytype'
+import { ArrayTypeNode, Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
 import { functionVisitor } from './function'
 import { functionTypeVisitor } from './functiontype'
 import { methodSignatureVisitor } from './method'
@@ -31,6 +30,7 @@ type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | Done
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | TypeNode) => ''
 
+export const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],

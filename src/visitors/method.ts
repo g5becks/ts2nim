@@ -1,6 +1,6 @@
 import { MethodSignature, Node } from 'ts-morph'
 import { makeDataType } from './datatypes'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 const makeMethod = (node: Node | Node[], parentName?: string): string => {
     const method = node as MethodSignature

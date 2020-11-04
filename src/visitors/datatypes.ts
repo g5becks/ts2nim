@@ -1,6 +1,6 @@
 import { BooleanLiteral, Identifier, LiteralTypeNode, Node, NullLiteral, Type, TypeReferenceNode } from 'ts-morph'
 import { buildTypeName, isReservedWord } from './utils'
-import { visit } from './visit'
+import { visit } from './visitors'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
     ['boolean', 'bool'],

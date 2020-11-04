@@ -1,6 +1,6 @@
 import { Node, PropertySignature } from 'ts-morph'
 import { capitalize, isReservedWord } from './utils'
-import { visit } from './visit'
+import { visit } from './visitors'
 
 const handleProperty = (prop: PropertySignature): string => {
     const name = prop.getName()
