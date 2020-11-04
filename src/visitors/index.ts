@@ -1,5 +1,8 @@
-export * from './classes'
-export * from './typealias'
-export * from './typeparams'
-export * from './visitors'
-export { visitorMap } from './visitormap'
+import { SourceFile } from 'ts-morph'
+import { visit } from './visitors'
+
+export const generate = (file: SourceFile): string =>
+    file
+        .forEachChildAsArray()
+        .map((child) => visit(child))
+        .join()
