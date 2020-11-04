@@ -1,6 +1,5 @@
 import events from 'events'
-import { ArrayTypeNode, Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
-import { functionVisitor } from './function'
+import { ArrayTypeNode, ClassDeclaration, FunctionDeclaration, Node, SourceFile, SyntaxKind, TypeNode } from 'ts-morph'
 import { functionTypeVisitor } from './functiontype'
 import { methodSignatureVisitor } from './method'
 import { parameterVisitor } from './parameter'
@@ -12,14 +11,16 @@ import { unionTypeVisitor } from './union'
 import { variableVisitor } from './variable'
 import {
     booleanVisitor,
+    identifierVisitor,
+    literalTypeVisitor,
+    makeDataType,
     numberVisitor,
     stringVisitor,
-    undefinedVisitor,
     typeReferenceVisitor,
-    identifierVisitor,
+    undefinedVisitor,
     unknownVisitor,
-    literalTypeVisitor,
 } from './datatypes'
+import { buildTypeName, capitalize, hasTypeParam, isReservedWord } from './utils'
 
 type DoneEvent = { message: 'Done' }
 
@@ -30,7 +31,32 @@ type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | Done
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | TypeNode) => ''
 
-export const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
+const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
+
+const classVisitor = (node: Node | Node[]): string => {
+    const classs = node as ClassDeclaration
+    const name = buildTypeName(classs)
+    if (hasTypeParam(classs)) {
+        classs.getTypeParameters()
+    }
+    return name
+}
+
+const functionVisitor = (node: Node | Node[]): string => {
+    const func = node as FunctionDeclaration
+    const funcName = func.getName()
+    if (!funcName) {
+        return makeDataType(func.getType())
+    }
+    const name = isReservedWord(funcName) ? `js${capitalize(funcName)}` : funcName
+    const params = func.getParameters()
+    const importParams = params.map((p) => (p.isRestParameter() ? '...#' : '#'))
+    const builtParams = visit(params)
+    return `proc ${name}*${visit(func.getTypeParameters())}(${builtParams}): ${visit(
+        func.getReturnTypeNodeOrThrow(),
+    )} {.importcpp:"${funcName}(${importParams})", nodecl.}`
+}
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
@@ -282,7 +308,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.VariableDeclaration, variableVisitor], // pass
     [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
     [SyntaxKind.FunctionDeclaration, functionVisitor], // TODO create visitor
-    [SyntaxKind.ClassDeclaration, pass], // TODO create visitor
+    [SyntaxKind.ClassDeclaration, classVisitor], // TODO create visitor
     [SyntaxKind.InterfaceDeclaration, pass], // TODO create visitor
     [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor], // TODO create visitor
     [SyntaxKind.EnumDeclaration, pass], // TODO create visitor
