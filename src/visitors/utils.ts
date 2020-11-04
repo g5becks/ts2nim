@@ -2,6 +2,7 @@ import {
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
+    MethodSignature,
     Node,
     SyntaxKind,
     TypeAliasDeclaration,
@@ -101,7 +102,7 @@ export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | st
 }
 
 // Builds type params for nodes that accept them.
-export const buildTypeParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
+export const buildTypeParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
@@ -110,18 +111,18 @@ export const buildTypeParams = (node: FunctionDeclaration | FunctionTypeNode): s
         : ''
 
 // Builds function parameters for functionLike nodes
-export const buildParams = (node: FunctionTypeNode | FunctionDeclaration): string =>
+export const buildParams = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature): string =>
     node
         .getParameters()
         .map((param) => visit(param))
         .join(', ')
 
 // Builds return type for functionLike nodes
-export const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration): string =>
+export const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature): string =>
     node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow()) : 'any'
 
 // Builds FFI params for functionLike nodes
-export const buildFFIParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
+export const buildFFIParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
     node
         .getParameters()
         .map((p) => (p.isRestParameter() ? '...#' : '#'))
