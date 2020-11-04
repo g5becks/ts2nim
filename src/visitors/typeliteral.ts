@@ -9,7 +9,7 @@ export const typeLiteralVisitor = (node: Node | Node[], parentName?: string): st
     }
     const properties = visit(n.getProperties())
     if (parentName) {
-        return properties + methods
+        return properties + `\n` + methods
     }
     console.log(properties)
     return `JsObj[tuple[${properties}]]`
