@@ -9,6 +9,7 @@ const file = proj.getSourceFiles()[0]
 const union = file.getTypeAliases()[1]
 
 const node = union.getTypeNodeOrThrow() as UnionTypeNode
+console.log(node.getTypeNodes().map((n) => n.getKindName()))
 console.log(
     node
         .getTypeNodes()

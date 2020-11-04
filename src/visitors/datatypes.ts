@@ -1,5 +1,5 @@
-import { Identifier, Node, Type, TypeReferenceNode } from 'ts-morph'
-import { isReservedWord } from './utils'
+import {Identifier, LiteralTypeNode, Node, Type, TypeReferenceNode} from 'ts-morph'
+import { buildTypeName, isReservedWord } from './utils'
 import { visit } from './visit'
 const primitiveMap = new Map<string, string>([
     ['string', 'cstring'],
@@ -48,14 +48,22 @@ export const identifierVisitor = (node: Node | Node[]): string => {
 const handleRef = (ref: TypeReferenceNode): string => {
     const typeName = visit(ref.getTypeName())
     if (ref.getTypeArguments().length) {
-        return build
+        return `${buildTypeName(typeName)}[${visit(ref.getTypeArguments())}]`
     }
+    return buildTypeName(typeName)
 }
 export const typeReferenceVisitor = (node: Node | Node[]): string => {
     if (Array.isArray(node)) {
         return node.map((n) => handleRef(n as TypeReferenceNode)).join(', ')
     }
     return handleRef(node as TypeReferenceNode)
+}
+
+const handlerLiteral = (lit: LiteralTypeNode): string => {
+    lit.getLiteral()
+}
+export const literalTypeVisitor(node: Node| Node[]): string => {
+    const n = node as LiteralTypeNode
 }
 
 export const makeDataType = (type: Type): string => {
