@@ -1,4 +1,12 @@
-import { ClassDeclaration, Node, SyntaxKind, TypeAliasDeclaration } from 'ts-morph'
+import {
+    ClassDeclaration,
+    FunctionDeclaration,
+    FunctionTypeNode,
+    Node,
+    SyntaxKind,
+    TypeAliasDeclaration,
+} from 'ts-morph'
+import { visit } from './visitors'
 
 const nimReserved = [
     'addr',
@@ -91,3 +99,12 @@ export const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | st
     const name = node.getNameNode()!.getText().trim()
     return isReservedWord(name) ? `Js${capitalize(name)}` : capitalize(name)
 }
+
+// Builds type params for types that accept them.
+export const makeTypeParams = (node: FunctionDeclaration | FunctionTypeNode): string =>
+    node.getTypeParameters().length
+        ? `[${node
+              .getTypeParameters()
+              .map((p) => visit(p))
+              .join(', ')}]`
+        : ''

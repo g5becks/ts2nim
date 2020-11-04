@@ -30,7 +30,7 @@ import {
     undefinedVisitor,
     unknownVisitor,
 } from './datatypes'
-import { buildTypeName, buildVarName, capitalize, hasTypeParam, isReservedWord } from './utils'
+import {buildTypeName, buildVarName, capitalize, hasTypeParam, isReservedWord, makeTypeParams} from './utils'
 
 type DoneEvent = { message: 'Done' }
 
@@ -40,7 +40,6 @@ type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | Done
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | TypeNode) => ''
-
 /** Visitor for SyntaxKind.ArrayType */
 const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
 
@@ -66,18 +65,16 @@ const functionVisitor = (node: Node | Node[]): string => {
         .map((param) => visit(param))
         .join(', ')
     const importParams = func.getParameters().map((p) => (p.isRestParameter() ? '...#' : '#'))
-    const typeParams = func
-        .getTypeParameters()
-        .map((p) => visit(p))
-        .join(', ')
+
     const returnType = func.getReturnTypeNode() ? visit(func.getReturnTypeNodeOrThrow()) : 'any'
-    return `proc ${name}*${typeParams}(${params}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
+    return `proc ${name}*${makeTypeParams(func)}(${params}): ${returnType} {.importcpp:"${name}(${importParams})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
 export const functionTypeVisitor = (node: Node | Node[]): string => {
     const signature = node as FunctionTypeNode
-    const returnType = makeDataType(signature.getReturnType())
+    const returnType = signature.getReturnTypeNode() ? visit(signature.getParentOrThrow()) : 'any'
+    const typeParams = signature.getTypeParameters().length ? `[${}]`
     return `proc${visit(signature.getTypeParameters())}(${visit(signature.getParameters())}): ${returnType}`
 }
 
@@ -146,8 +143,8 @@ const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getText().trim())
     return typeof param.getConstraint() !== 'undefined'
-        ? `[${paramName}]`
-        : `[${paramName}: ${visit(param.getConstraintOrThrow())}]`
+        ? `${paramName}`
+        : `${paramName}: ${visit(param.getConstraintOrThrow())}`
 }
 
 /** Visitor for SyntaxKind.UnionType */
