@@ -120,16 +120,17 @@ const typeAliasVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    let methods = ''
-    if (n.getMethods().length) {
-        methods = visit(n.getMethods(), parentName)
-    }
-    const properties = visit(n.getProperties())
-    if (parentName) {
-        return properties + `\n` + methods
-    }
-    console.log(properties)
-    return `JsObj[tuple[${properties}]]`
+    const methods = n.getMethods()
+    n.getMethods()
+        .map((method) => visit(method, parentName))
+        .join('\n')
+
+    const properties = n
+        .getProperties()
+        .map((prop) => visit(prop))
+        .join(', ')
+
+    return parentName ? properties + `\n` + methods : `JsObj[tuple[${properties}]]`
 }
 
 /** Visitor for SyntaxKind.TypeParameter */
@@ -158,7 +159,7 @@ const variableVisitor = (node: Node): string => {
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
-    [SyntaxKind.EndOfFileToken, (_node: Node | Node[]): DoneEvent => ({ message: 'Done' })],
+    [SyntaxKind.EndOfFileToken, (_node: Node): DoneEvent => ({ message: 'Done' })],
     [SyntaxKind.SingleLineCommentTrivia, pass], // pass
     [SyntaxKind.MultiLineCommentTrivia, pass], // pass
     [SyntaxKind.NewLineTrivia, pass], // pass
