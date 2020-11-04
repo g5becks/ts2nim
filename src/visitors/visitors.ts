@@ -37,7 +37,7 @@ import {
     hasTypeParam,
     isReservedWord,
     buildTypeParams,
-    buildParams, buildReturnType
+    buildParams, buildReturnType, buildFFIParams
 } from './utils'
 
 type DoneEvent = { message: 'Done' }
@@ -52,7 +52,7 @@ const pass = (_node: Node | TypeNode) => ''
 const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
 
 /** Visitor for SyntaxKind.ClassDeclaration */
-const classVisitor = (node: Node | Node[]): string => {
+const classVisitor = (node: Node): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
     if (hasTypeParam(classs)) {
@@ -62,13 +62,13 @@ const classVisitor = (node: Node | Node[]): string => {
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
-const functionVisitor = (node: Node | Node[]): string => {
+const functionVisitor = (node: Node): string => {
     const func = node as FunctionDeclaration
     if (!func.getName()) {
-        return makeDataType(func.getType())
+        return visit(node)
     }
     const name = buildVarName(func.getName()!)
-    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)} {.importcpp:"${name}(${importParams})", nodecl.}`
+    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)} {.importcpp:"${name}(${buildFFIParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
