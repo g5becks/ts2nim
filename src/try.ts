@@ -5,8 +5,10 @@ const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
 
-const funcs = file.getTypeAliases()
+const kids = file.forEachChildAsArray()
 
-const data = funcs.map((f) => visit(f)).join('\n')
+kids.forEach((kid) => console.log(kid.getKindName()))
+const data = kids.map((f) => visit(f)).join('\n')
 
+console.log(data)
 fs.writeFileSync('data.nim', Buffer.from(data, 'utf-8'))

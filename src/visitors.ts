@@ -123,7 +123,6 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
         return `JsObj[tuple[${properties ? properties + ', ' : ''} ${meths}]]`
     }
     const props = properties ? `[${properties}]` : ''
-    console.log(methods)
     return parentName ? properties + `\n` + methods : `JsObj[tuple${props}]`
 }
 
@@ -131,8 +130,6 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getName())
-    console.log(param.getConstraint()?.getText())
-    console.log(param.getConstraint()?.getKindName())
     return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
         : `${paramName}: ${visit(param.getConstraintOrThrow())}`
