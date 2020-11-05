@@ -41,7 +41,7 @@ const classVisitor = (node: Node): string => {
     const name = buildTypeName(classs)
 
     return `type ${name}${buildTypeParams(classs)}* = ref object
-             ${buildPropS(classs.getProperties(), '\n', name)}
+             ${buildPropS(classs.getProperties(), '\n   ', name)}
              ${buildMethods(classs.getMethods())}`
 }
 
@@ -145,21 +145,6 @@ const variableVisitor = (node: Node): string => {
     const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
     return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
 }
-
-/** Visitor for SyntaxKind.NumberKeyword */
-const numberVisitor = (_node: Node): string => 'int'
-
-/** Visitor for SyntaxKind.UnknownKeyword */
-const unknownVisitor = (_node: Node): string => 'any'
-
-/** Visitor for SyntaxKind.StringKeyword */
-const stringVisitor = (_node: Node): string => 'cstring'
-
-/** Visitor for SyntaxKind.BooleanKeyword */
-const booleanVisitor = (_node: Node): string => 'bool'
-
-/** Visitor for SyntaxKind.UndefinedKeyword */
-const undefinedVisitor = (_node: Node): string => 'undefined'
 
 /** Visitor for SyntaxKind.Identifier */
 const identifierVisitor = (node: Node): string => {
@@ -356,10 +341,10 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.AbstractKeyword, pass], // pass
     [SyntaxKind.AsKeyword, pass], // pass
     [SyntaxKind.AssertsKeyword, pass], // pass
-    [SyntaxKind.AnyKeyword, pass], // pass
+    [SyntaxKind.AnyKeyword, (_node: Node) => 'any'], // pass
     [SyntaxKind.AsyncKeyword, pass], // pass
     [SyntaxKind.AwaitKeyword, pass], // pass
-    [SyntaxKind.BooleanKeyword, booleanVisitor], // pass
+    [SyntaxKind.BooleanKeyword, (_node: Node) => 'bool'], // pass
     [SyntaxKind.ConstructorKeyword, pass], // pass
     [SyntaxKind.DeclareKeyword, pass], // pass
     [SyntaxKind.GetKeyword, pass], // pass
@@ -371,15 +356,15 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.NeverKeyword, pass], // pass
     [SyntaxKind.ReadonlyKeyword, pass], // pass
     [SyntaxKind.RequireKeyword, pass], // pass
-    [SyntaxKind.NumberKeyword, numberVisitor],
+    [SyntaxKind.NumberKeyword, (_node: Node) => 'int'],
     [SyntaxKind.ObjectKeyword, pass], // pass
     [SyntaxKind.SetKeyword, pass], // pass
-    [SyntaxKind.StringKeyword, stringVisitor], // pass
+    [SyntaxKind.StringKeyword, (_node: Node) => 'string'], // pass
     [SyntaxKind.SymbolKeyword, pass], // pass
     [SyntaxKind.TypeKeyword, pass], // pass
-    [SyntaxKind.UndefinedKeyword, undefinedVisitor], // pass
+    [SyntaxKind.UndefinedKeyword, (_node: Node) => 'undefined'], // pass
     [SyntaxKind.UniqueKeyword, pass], // pass
-    [SyntaxKind.UnknownKeyword, unknownVisitor], // pass
+    [SyntaxKind.UnknownKeyword, (_node: Node) => 'any'], // pass
     [SyntaxKind.FromKeyword, pass], // pass
     [SyntaxKind.GlobalKeyword, pass], // pass
     [SyntaxKind.BigIntKeyword, pass], // pass
