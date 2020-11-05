@@ -65,7 +65,7 @@ const functionTypeVisitor = (node: Node): string => {
 const methodSignatureVisitor = (node: Node, parentName?: string): string => {
     const method = node as MethodSignature
     const name = buildVarName(method.getName())
-    return `method ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
+    return `proc ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
         method,
     )} {.importcpp: """#.${name}(${buildFFiParams(method)})""", nodecl .}
     `
@@ -201,7 +201,7 @@ const literalTypeVisitor = (node: Node): string => {
 const emitter = new events.EventEmitter()
 emitter.addListener('Done', () => {
     console.log('conversion complete')
-    process.exit()
+    // process.exit()
 })
 
 type DoneEvent = { message: 'Done' }
