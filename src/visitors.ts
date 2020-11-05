@@ -56,13 +56,13 @@ const functionVisitor = (node: Node): string => {
 }
 
 /** Visitor for SyntaxKind.FunctionType */
-const functionTypeVisitor = (node: Node | Node[]): string => {
+const functionTypeVisitor = (node: Node): string => {
     const func = node as FunctionTypeNode
     return `proc${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)}`
 }
 
 /** Visitor for SyntaxKind.MethodSignature */
-const methodSignatureVisitor = (node: Node | Node[], parentName?: string): string => {
+const methodSignatureVisitor = (node: Node, parentName?: string): string => {
     const method = node as MethodSignature
     const name = buildVarName(method.getName())
     return `method ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
