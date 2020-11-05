@@ -83,17 +83,17 @@ const parameterVisitor = (node: Node): string => {
 const propertySignatureVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
+    // if property belongs to a parent node (type alias), insert it on a new line
     return `${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
 const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
-    const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' + '  ' : ''
+    const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
     const typeName = buildTypeName(alias.getName())
     const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName) : ''
-    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName)} = ${ref}${props}
-                `
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName)} = ${ref}${props}`
 }
 
 /** Visitor for SyntaxKind.TypeLiteral */
@@ -107,7 +107,7 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const properties = n
         .getProperties()
         .map((prop) => visit(prop, parentName))
-        .join(', ')
+        .join(parentName ? '' : ', ') // add comma if prop has no parent node.
 
     return parentName ? properties + `\n` + methods : `JsObj[tuple[${properties}]]`
 }
