@@ -100,8 +100,8 @@ const typeAliasVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    const methods = n.getMethods()
-    n.getMethods()
+    const methods = n
+        .getMethods()
         .map((method) => visit(method, parentName))
         .join('\n')
 
@@ -123,6 +123,7 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
         return `JsObj[tuple[${properties ? properties + ', ' : ''} ${meths}]]`
     }
     const props = properties ? `[${properties}]` : ''
+    console.log(methods)
     return parentName ? properties + `\n` + methods : `JsObj[tuple${props}]`
 }
 
