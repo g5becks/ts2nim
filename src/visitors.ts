@@ -110,7 +110,20 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
         .map((prop) => visit(prop, parentName))
         .join(parentName ? '' : ', ') // add comma if prop has no parent node.
 
-    return parentName ? properties + `\n` + methods : `JsObj[tuple[${properties}]]`
+    // if typeLiteral has methods and doesn't belong to a parent node (type alias)
+    // methods get transformed to procs that belong to the anonymous object.
+    if (n.getMethods().length && !parentName) {
+        const meths = n
+            .getMethods()
+            .map((method) => {
+                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method)
+            })
+            .join('\n')
+
+        return `JsObj[tuple[${properties ? properties + ', ' : ''} ${meths}]]`
+    }
+    const props = properties ? `[${properties}]` : ''
+    return parentName ? properties + `\n` + methods : `JsObj[tuple${props}]`
 }
 
 /** Visitor for SyntaxKind.TypeParameter */
