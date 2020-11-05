@@ -83,8 +83,9 @@ const parameterVisitor = (node: Node): string => {
 const propertySignatureVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
-    // if property belongs to a parent node (type alias), insert it on a new line
-    return `${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
+    // if property belongs to a parent node (type alias), insert space and
+    // add each one on a new line
+    return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
