@@ -10,6 +10,7 @@ import {
     Node,
     NullLiteral,
     ParameterDeclaration,
+    PropertyDeclaration,
     PropertySignature,
     SyntaxKind,
     TypeAliasDeclaration,
@@ -39,7 +40,9 @@ const classVisitor = (node: Node): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
     const methods = buildMethods(classs.getMethods())
-    return `type ${name}${buildTypeParams(classs)}* = ref object `
+
+    return `type ${name}${buildTypeParams(classs)}* = ref object
+             ${buildProps(classs.getProperties(), '\n', name)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -79,8 +82,8 @@ const parameterVisitor = (node: Node): string => {
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
-const propertySignatureVisitor = (node: Node, parentName?: string): string => {
-    const prop = node as PropertySignature
+const propertyVisitor = (node: Node, parentName?: string): string => {
+    const prop = node as PropertySignature | PropertyDeclaration
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
     const readonly = prop.isReadonly() ? '## readonly\n' : ''
     // if property belongs to a parent node (type alias), insert space and
@@ -386,8 +389,8 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TypeParameter, typeParamVisitor], // pass
     [SyntaxKind.Parameter, parameterVisitor], // pass
     [SyntaxKind.Decorator, pass], // pass
-    [SyntaxKind.PropertySignature, propertySignatureVisitor],
-    [SyntaxKind.PropertyDeclaration, pass], // TODO cerate visitor
+    [SyntaxKind.PropertySignature, propertyVisitor],
+    [SyntaxKind.PropertyDeclaration, propertyVisitor],
     [SyntaxKind.MethodSignature, methodSignatureVisitor],
     [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
     [SyntaxKind.Constructor, pass], // TODO create visitor
