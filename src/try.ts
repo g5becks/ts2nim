@@ -6,7 +6,7 @@ const file = proj.getSourceFiles()[0]
 
 const classs = file.getClasses()[0]
 
-const data = classs.getProperties().map((prop) => prop.getKindName())
+const data = classs.getMethods().map((prop) => prop.getKindName())
 console.log(data)
 
 /*

@@ -5,6 +5,7 @@ import {
     FunctionDeclaration,
     FunctionTypeNode,
     LiteralTypeNode,
+    MethodDeclaration,
     MethodSignature,
     Node,
     NullLiteral,
@@ -37,11 +38,8 @@ const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).g
 const classVisitor = (node: Node): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
-    if (hasTypeParam(classs)) {
-        classs.getTypeParameters()
-    }
-    return `type ${name}${buildTypeParams(classs)}* = ref object
-                ${}`
+    const methods = buildMethods(classs.getMethods())
+    return `type ${name}${buildTypeParams(classs)}* = ref object `
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -725,3 +723,6 @@ const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSig
         .getParameters()
         .map((p) => (p.isRestParameter() ? '...#' : '#'))
         .join(', ')
+
+const buildMethods = (methods: MethodDeclaration[], parentName?: string): string =>
+    methods.map((method) => visit(method, parentName)).join('\n')
