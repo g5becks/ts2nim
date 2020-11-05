@@ -80,20 +80,19 @@ const parameterVisitor = (node: Node): string => {
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
-const propertySignatureVisitor = (node: Node): string => {
+const propertySignatureVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
-    return `${buildVarName(prop.getName())}: ${propType}`
+    return `${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
 const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
-    const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
-    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), buildTypeName(alias.getName())) : ''
-    const tParams = buildTypeParams(alias)
-    console.log('THESE ARE THE T-PARAMS ' + tParams)
-    return `type ${buildTypeName(alias)}*${buildTypeParams(alias)} = ${ref}${props}
+    const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' + '  ' : ''
+    const typeName = buildTypeName(alias.getName())
+    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName) : ''
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName)} = ${ref}${props}
                 `
 }
 
@@ -107,7 +106,7 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 
     const properties = n
         .getProperties()
-        .map((prop) => visit(prop))
+        .map((prop) => visit(prop, parentName))
         .join(', ')
 
     return parentName ? properties + `\n` + methods : `JsObj[tuple[${properties}]]`
@@ -117,6 +116,8 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getName())
+    console.log(param.getConstraint()?.getText())
+    console.log(param.getConstraint()?.getKindName())
     return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
         : `${paramName}: ${visit(param.getConstraintOrThrow())}`
