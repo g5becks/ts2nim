@@ -89,9 +89,11 @@ const propertySignatureVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
 const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
-    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow()) : ''
-    return `type ${buildTypeName(alias)}*${buildTypeParams(alias)} = ref object
-                ${props}
+    const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
+    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), buildTypeName(alias.getName())) : ''
+    const tParams = buildTypeParams(alias)
+    console.log('THESE ARE THE T-PARAMS ' + tParams)
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias)} = ${ref}${props}
                 `
 }
 
@@ -679,11 +681,12 @@ const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | string): 
 // Builds type params for nodes that accept them.
 const buildTypeParams = (
     node: FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
+    parentName?: string,
 ): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
-              .map((p) => visit(p))
+              .map((p) => visit(p, parentName))
               .join(', ')}]`
         : ''
 

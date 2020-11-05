@@ -5,7 +5,6 @@ const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
 
-const func = file.getFunctions()[0]
+const funcs = file.getTypeAliases()
 
-console.log(func.getTypeParameters().map((p) => p.getKindName()))
-console.log(visit(func))
+console.log(funcs.map((f) => visit(f)))
