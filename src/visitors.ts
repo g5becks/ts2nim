@@ -101,11 +101,8 @@ const typeAliasVisitor = (node: Node): string => {
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
     const methods = buildMethodS(n.getMethods())
-    const properties = n
-        .getProperties()
-        .map((prop) => visit(prop, parentName))
-        .join(parentName ? '' : ', ') // add comma if prop has no parent node.
-
+    // add comma if prop has no parent node.
+    const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName)
     // if typeLiteral has methods and doesn't belong to a parent node (type alias)
     // methods get transformed to procs that belong to the anonymous object.
     if (n.getMethods().length && !parentName) {
@@ -727,3 +724,7 @@ const buildMethods = (methods: MethodDeclaration[], parentName?: string): string
 // Builds methods from MethodSignatures
 const buildMethodS = (methods: MethodSignature[], parentName?: string): string =>
     methods.map((method) => visit(method, parentName)).join('\n')
+
+// Builds properties
+const buildProps = (props: PropertySignature[], separator: string, parentName?: string): string =>
+    props.map((prop) => visit(prop, parentName)).join(separator)
