@@ -39,10 +39,10 @@ const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).g
 const classVisitor = (node: Node): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
-    const methods = buildMethods(classs.getMethods())
 
     return `type ${name}${buildTypeParams(classs)}* = ref object
-             ${buildProps(classs.getProperties(), '\n', name)}`
+             ${buildPropS(classs.getProperties(), '\n', name)}
+             ${buildMethods(classs.getMethods())}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -674,8 +674,6 @@ const lowerCase = (text: string): string => text.replace(/^\w/, (c) => c.toLower
 */
 const isReservedWord = (word: string): boolean => nimReserved.includes(word)
 
-const hasTypeParam = (node: Node): boolean => node.getChildrenOfKind(SyntaxKind.TypeParameter).length > 0
-
 const buildVarName = (v: string): string => {
     const varName = v.trim()
     return isReservedWord(varName) ? `js${capitalize(varName)}` : varName
@@ -730,4 +728,7 @@ const buildMethodS = (methods: MethodSignature[], parentName?: string): string =
 
 // Builds properties
 const buildProps = (props: PropertySignature[], separator: string, parentName?: string): string =>
+    props.map((prop) => visit(prop, parentName)).join(separator)
+
+const buildPropS = (props: PropertyDeclaration[], separator: string, parentName?: string): string =>
     props.map((prop) => visit(prop, parentName)).join(separator)
