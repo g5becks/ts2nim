@@ -1,14 +1,14 @@
 import { Project } from 'ts-morph'
-import { visit } from './visitors'
-import * as fs from 'fs'
+
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const file = proj.getSourceFiles()[0]
 
-const kids = file.forEachChildAsArray()
+const classs = file.getClasses()[0]
 
-kids.forEach((kid) => console.log(kid.getKindName()))
-const data = kids.map((f) => visit(f)).join('\n')
-
+const data = classs.getProperties().map((prop) => prop.getKindName())
 console.log(data)
+
+/*
 fs.writeFileSync('data.nim', Buffer.from(data, 'utf-8'))
+*/

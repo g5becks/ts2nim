@@ -40,7 +40,8 @@ const classVisitor = (node: Node): string => {
     if (hasTypeParam(classs)) {
         classs.getTypeParameters()
     }
-    return name
+    return `type ${name}${buildTypeParams(classs)}* = ref object
+                ${}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -83,9 +84,10 @@ const parameterVisitor = (node: Node): string => {
 const propertySignatureVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
+    const readonly = prop.isReadonly() ? '## readonly\n' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
-    return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
+    return `${parentName ? '   ' : ''}${readonly}${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
@@ -696,7 +698,7 @@ const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | string): 
 
 // Builds type params for nodes that accept them.
 const buildTypeParams = (
-    node: FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
+    node: ClassDeclaration | FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
     parentName?: string,
 ): string =>
     node.getTypeParameters().length
