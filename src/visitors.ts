@@ -42,7 +42,7 @@ const classVisitor = (node: Node): string => {
 
     return `type ${name}${buildTypeParams(classs)}* = ref object
              ${buildPropS(classs.getProperties(), '\n   ', name)}
-             ${buildMethods(classs.getMethods())}`
+             ${buildMethods(classs.getMethods(), name)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -148,7 +148,15 @@ const variableVisitor = (node: Node): string => {
 
 /** Visitor for SyntaxKind.Identifier */
 const identifierVisitor = (node: Node): string => {
-    const name = node.getText().trim()
+    const name = node.getText()
+    console.log(`hit identifier visitor ${node.getKindName()}`)
+    return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
+}
+
+/** Visitor for SyntaxKind.QualifiedName */
+const qualifiedNameVisitor = (node: Node): string => {
+    const name = node.getText()
+    console.log(`hit qualified visitor ${node.getKindName()}`)
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
@@ -196,6 +204,9 @@ const isDone = (event: any): event is DoneEvent =>
 type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | DoneEvent
 
 export const visit = (node: Node | TypeNode, parentName?: string): string => {
+    if (!visitorMap.has(node.getKind())) {
+        console.log('node visitor registered for ' + node.getKind())
+    }
     if (visitorMap.has(node.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const data = visitorMap.get(node.getKind())!(node, parentName)
@@ -210,7 +221,10 @@ export const visit = (node: Node | TypeNode, parentName?: string): string => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pass = (_node: Node | TypeNode) => ''
+const pass = (_node: Node | TypeNode) => {
+    console.log('skipping node ' + _node.getKind() + ' ' + _node.getKindName())
+    return ''
+}
 
 const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
@@ -363,13 +377,13 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.SymbolKeyword, pass], // pass
     [SyntaxKind.TypeKeyword, pass], // pass
     [SyntaxKind.UndefinedKeyword, (_node: Node) => 'undefined'], // pass
-    [SyntaxKind.UniqueKeyword, pass], // pass
+    [SyntaxKind.UniqueKeyword, (_node: Node) => 'distinct'], // pass
     [SyntaxKind.UnknownKeyword, (_node: Node) => 'any'], // pass
     [SyntaxKind.FromKeyword, pass], // pass
     [SyntaxKind.GlobalKeyword, pass], // pass
     [SyntaxKind.BigIntKeyword, pass], // pass
     [SyntaxKind.OfKeyword, pass], // pass
-    [SyntaxKind.QualifiedName, pass], // pass
+    [SyntaxKind.QualifiedName, qualifiedNameVisitor],
     [SyntaxKind.ComputedPropertyName, pass], // pass
     [SyntaxKind.TypeParameter, typeParamVisitor], // pass
     [SyntaxKind.Parameter, parameterVisitor], // pass
@@ -576,7 +590,6 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.LastBinaryOperator, pass], // pass
     [SyntaxKind.FirstStatement, pass], // pass
     [SyntaxKind.LastStatement, pass], // pass
-    [SyntaxKind.FirstNode, pass], // pass
     [SyntaxKind.FirstJSDocNode, pass], // TODO create visitor
     [SyntaxKind.LastJSDocNode, pass], // TODO create visitor
     [SyntaxKind.FirstJSDocTagNode, pass], // TODO create visitor
