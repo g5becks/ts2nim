@@ -100,11 +100,7 @@ const typeAliasVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    const methods = n
-        .getMethods()
-        .map((method) => visit(method, parentName))
-        .join('\n')
-
+    const methods = buildMethodS(n.getMethods())
     const properties = n
         .getProperties()
         .map((prop) => visit(prop, parentName))
@@ -724,5 +720,10 @@ const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSig
         .map((p) => (p.isRestParameter() ? '...#' : '#'))
         .join(', ')
 
+// Builds methods from MethodDeclarations
 const buildMethods = (methods: MethodDeclaration[], parentName?: string): string =>
+    methods.map((method) => visit(method, parentName)).join('\n')
+
+// Builds methods from MethodSignatures
+const buildMethodS = (methods: MethodSignature[], parentName?: string): string =>
     methods.map((method) => visit(method, parentName)).join('\n')
