@@ -198,6 +198,9 @@ const literalTypeVisitor = (node: Node): string => {
     return 'any'
 }
 
+/** Visitor for SyntaxKind.TypeOfKeyword */
+const typeOfVisitor = (_node: Node): string => 'typeof'
+
 const emitter = new events.EventEmitter()
 emitter.addListener('Done', () => {
     console.log('conversion complete')
@@ -340,7 +343,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ThrowKeyword, pass], // pass
     [SyntaxKind.TrueKeyword, pass], // pass
     [SyntaxKind.TryKeyword, pass], // pass
-    [SyntaxKind.TypeOfKeyword, pass], // pass
+    [SyntaxKind.TypeOfKeyword, typeOfVisitor],
     [SyntaxKind.VarKeyword, pass], // pass
     [SyntaxKind.VoidKeyword, pass], // pass
     [SyntaxKind.WhileKeyword, pass], // pass
