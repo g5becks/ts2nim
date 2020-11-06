@@ -4,6 +4,7 @@ import {
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
+    LiteralExpression,
     LiteralTypeNode,
     MethodDeclaration,
     MethodSignature,
@@ -33,7 +34,8 @@ const typesMap = new Map<string, string>([
 ])
 
 /** Visitor for SyntaxKind.ArrayType */
-const arrayTypeVisitor = (node: Node): string => visit((node as ArrayTypeNode).getElementTypeNode())
+const arrayTypeVisitor = (node: Node, parentName?: string): string =>
+    visit((node as ArrayTypeNode).getElementTypeNode(), parentName)
 
 /** Visitor for SyntaxKind.ClassDeclaration */
 const classVisitor = (node: Node): string => {
@@ -69,6 +71,7 @@ const methodSignatureVisitor = (node: Node, parentName?: string): string => {
     const name = buildVarName(method.getName())
     return `proc ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
         method,
+        parentName,
     )} {.importcpp: """#.${name}(${buildFFiParams(method)})""", nodecl .}
     `
 }
@@ -149,14 +152,12 @@ const variableVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.Identifier */
 const identifierVisitor = (node: Node): string => {
     const name = node.getText()
-    console.log(`hit identifier visitor ${node.getKindName()}`)
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
 /** Visitor for SyntaxKind.QualifiedName */
 const qualifiedNameVisitor = (node: Node): string => {
     const name = node.getText()
-    console.log(`hit qualified visitor ${node.getKindName()}`)
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
@@ -173,6 +174,7 @@ const typeReferenceVisitor = (node: Node): string => {
     return buildTypeName(typeName)
 }
 
+// const literalsToBuild = new Set<string>()
 /** Visitor for SyntaxKind.LiteralType */
 const literalTypeVisitor = (node: Node): string => {
     const lit = node as LiteralTypeNode
@@ -182,6 +184,10 @@ const literalTypeVisitor = (node: Node): string => {
     }
     if (litType instanceof BooleanLiteral) {
         return litType.getLiteralValue() ? '`true`' : '`false`'
+    }
+
+    if (litType instanceof LiteralExpression) {
+        return litType.
     }
 
     return 'any'
@@ -222,7 +228,7 @@ export const visit = (node: Node | TypeNode, parentName?: string): string => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pass = (_node: Node | TypeNode) => {
-    console.log('skipping node ' + _node.getKind() + ' ' + _node.getKindName())
+    console.debug('skipping node ' + _node.getKind() + ' ' + _node.getKindName())
     return ''
 }
 
@@ -340,7 +346,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.TryKeyword, pass], // pass
     [SyntaxKind.TypeOfKeyword, typeOfVisitor],
     [SyntaxKind.VarKeyword, pass], // pass
-    [SyntaxKind.VoidKeyword, pass], // pass
+    [SyntaxKind.VoidKeyword, (_node: Node) => 'void'], // pass
     [SyntaxKind.WhileKeyword, pass], // pass
     [SyntaxKind.WithKeyword, pass], // pass
     [SyntaxKind.ImplementsKeyword, pass], // pass
@@ -391,7 +397,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.PropertySignature, propertyVisitor],
     [SyntaxKind.PropertyDeclaration, propertyVisitor],
     [SyntaxKind.MethodSignature, methodSignatureVisitor],
-    [SyntaxKind.MethodDeclaration, pass], // TODO create visitor
+    [SyntaxKind.MethodDeclaration, methodSignatureVisitor], // TODO create visitor
     [SyntaxKind.Constructor, pass], // TODO create visitor
     [SyntaxKind.GetAccessor, pass], // TODO create visitor
     [SyntaxKind.SetAccessor, pass], // TODO create visitor
@@ -413,7 +419,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ConditionalType, pass], // TODO create visitor
     [SyntaxKind.InferType, pass], // TODO create visitor
     [SyntaxKind.ParenthesizedType, pass], // TODO create visitor
-    [SyntaxKind.ThisType, pass], // TODO create visitor
+    [SyntaxKind.ThisType, (_node: Node, parentName?: string) => parentName!],
     [SyntaxKind.TypeOperator, pass], // TODO create visitor
     [SyntaxKind.IndexedAccessType, pass], // TODO create visitor
     [SyntaxKind.MappedType, pass], // TODO create visitor
@@ -706,8 +712,8 @@ const buildParams = (node: FunctionTypeNode | FunctionDeclaration | MethodSignat
         .join(', ')
 
 // Builds return type for functionLike nodes
-const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature): string =>
-    node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow()) : 'any'
+const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature, parentName?: string): string =>
+    node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow(), parentName) : 'any'
 
 // Builds FFI params for functionLike nodes
 const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
