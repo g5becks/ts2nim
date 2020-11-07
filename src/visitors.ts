@@ -66,17 +66,22 @@ const functionVisitor = (node: Node, parentName?: string, literalSet?: Set<Liter
 /** Visitor for SyntaxKind.FunctionType */
 const functionTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const func = node as FunctionTypeNode
-    return `proc${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)}`
+    return `proc${buildTypeParams(func, parentName, literalSet)}(${buildParams(
+        func,
+        parentName,
+        literalSet,
+    )}): ${buildReturnType(func, parentName, literalSet)}`
 }
 
 /** Visitor for SyntaxKind.MethodSignature */
 const methodSignatureVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const method = node as MethodSignature
     const name = buildVarName(method.getName())
-    return `proc ${name}*${buildTypeParams(method)}(self: ${parentName}, ${buildParams(method)}): ${buildReturnType(
+    return `proc ${name}*${buildTypeParams(method, parentName, literalSet)}(self: ${parentName}, ${buildParams(
         method,
-        parentName,
-    )} {.importcpp: """#.${name}(${buildFFiParams(method)})""", nodecl .}
+    )}): ${buildReturnType(method, parentName, literalSet)} {.importcpp: """#.${name}(${buildFFiParams(
+        method,
+    )})""", nodecl .}
     `
 }
 
