@@ -140,14 +140,14 @@ const typeParamVisitor = (node: Node, parentName?: string, literalSet?: Set<Lite
     const paramName = buildTypeName(param.getName())
     return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
-        : `${paramName}: ${visit(param.getConstraintOrThrow())}`
+        : `${paramName}: ${visit(param.getConstraintOrThrow(), parentName, literalSet)}`
 }
 
 /** Visitor for SyntaxKind.UnionType */
 const unionTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
     (node as UnionTypeNode)
         .getTypeNodes()
-        .map((n) => visit(n))
+        .map((n) => visit(n, parentName, literalSet))
         .join(' | ')
 
 /** Visitor for SyntaxKind.VariableDeclaration */
@@ -155,17 +155,21 @@ const variableVisitor = (node: Node, parentName?: string, literalSet?: Set<Liter
     const v = node as VariableDeclaration
     const k = v?.getVariableStatement()?.getDeclarationKind()
     const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
-    return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
+    return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(
+        v.getTypeNodeOrThrow(),
+        parentName,
+        literalSet,
+    )}`
 }
 
 /** Visitor for SyntaxKind.Identifier */
-const identifierVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const identifierVisitor = (node: Node, _parentName?: string, _literalSet?: Set<LiteralToBuild>): string => {
     const name = node.getText()
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
 /** Visitor for SyntaxKind.QualifiedName */
-const qualifiedNameVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const qualifiedNameVisitor = (node: Node, _parentName?: string, _literalSet?: Set<LiteralToBuild>): string => {
     const name = node.getText()
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
@@ -177,7 +181,7 @@ const typeReferenceVisitor = (node: Node, parentName?: string, literalSet?: Set<
     if (ref.getTypeArguments().length) {
         return `${buildTypeName(typeName)}[${ref
             .getTypeArguments()
-            .map((n) => visit(n))
+            .map((n) => visit(n, parentName, literalSet))
             .join(', ')}]`
     }
     return buildTypeName(typeName)
@@ -201,7 +205,7 @@ const literalTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<Li
 }
 
 /** Visitor for SyntaxKind.StringLiteral */
-const stringLiteralVisitor = (node: Node, parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
+const stringLiteralVisitor = (node: Node, _parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
     const n = node as StringLiteral
     const typeName = buildLiteralTypeName(n)
     literalsSet?.add({ name: typeName, type: 'string' })
@@ -210,7 +214,7 @@ const stringLiteralVisitor = (node: Node, parentName?: string, literalsSet?: Set
 }
 
 /** Visitor for SyntaxKind.NumericalLiteral */
-const numericalLiteralVisitor = (node: Node, parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
+const numericalLiteralVisitor = (node: Node, _parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
     const n = node as NumericLiteral
     const typeName = buildLiteralTypeName(n)
     literalsSet?.add({ name: typeName, type: 'int' })
