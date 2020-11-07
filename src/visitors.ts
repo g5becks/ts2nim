@@ -41,7 +41,7 @@ const arrayTypeVisitor = (node: Node, parentName?: string): string =>
     visit((node as ArrayTypeNode).getElementTypeNode(), parentName)
 
 /** Visitor for SyntaxKind.ClassDeclaration */
-const classVisitor = (node: Node, _parentName?: string): string => {
+const classVisitor = (node: Node): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
 
@@ -52,25 +52,21 @@ const classVisitor = (node: Node, _parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
-const functionVisitor = (node: Node, parentName?: string): string => {
+const functionVisitor = (node: Node): string => {
     const func = node as FunctionDeclaration
     if (!func.getName()) {
-        return visit(node, parentName)
+        return visit(node)
     }
     const name = buildVarName(func.getName()!)
-    return `proc ${buildVarName(name)}*${buildTypeParams(func, parentName)}(${buildParams(
+    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(
         func,
-        parentName,
-    )}): ${buildReturnType(func, parentName)} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
+    )} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
-const functionTypeVisitor = (node: Node, parentName?: string): string => {
+const functionTypeVisitor = (node: Node): string => {
     const func = node as FunctionTypeNode
-    return `proc${buildTypeParams(func, parentName)}(${buildParams(func, parentName)}): ${buildReturnType(
-        func,
-        parentName,
-    )}`
+    return `proc${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(func)}`
 }
 
 /** Visitor for SyntaxKind.MethodSignature */
@@ -84,17 +80,17 @@ const methodSignatureVisitor = (node: Node, parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.Parameter */
-const parameterVisitor = (node: Node, parentName?: string): string => {
+const parameterVisitor = (node: Node): string => {
     const param = node as ParameterDeclaration
     const name = buildVarName(param.getName())
-    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow(), parentName) : 'any'
+    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow()) : 'any'
     return param.isRestParameter() ? `${name}: varargs[${paramType}]` : `${name}: ${paramType}`
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
 const propertyVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature | PropertyDeclaration
-    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow(), parentName) : 'any'
+    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
     const readonly = prop.isReadonly() ? '{.readonly.}' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
@@ -104,7 +100,7 @@ const propertyVisitor = (node: Node, parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
-const typeAliasVisitor = (node: Node, _parentName?: string): string => {
+const typeAliasVisitor = (node: Node): string => {
     const alias = node as TypeAliasDeclaration
     const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
     const typeName = buildTypeName(alias.getName())
@@ -115,7 +111,7 @@ const typeAliasVisitor = (node: Node, _parentName?: string): string => {
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    const methods = buildMethodS(n.getMethods(), parentName)
+    const methods = buildMethodS(n.getMethods())
     // add comma if prop has no parent node.
     const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName)
     // if typeLiteral has methods and doesn't belong to a parent node (type alias)
@@ -124,7 +120,7 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
         const meths = n
             .getMethods()
             .map((method) => {
-                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method, parentName)
+                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method)
             })
             .join('\n')
 
@@ -135,59 +131,56 @@ const typeLiteralVisitor = (node: Node, parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.TypeParameter */
-const typeParamVisitor = (node: Node, parentName?: string): string => {
+const typeParamVisitor = (node: Node): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getName())
     return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
-        : `${paramName}: ${visit(param.getConstraintOrThrow(), parentName)}`
+        : `${paramName}: ${visit(param.getConstraintOrThrow())}`
 }
 
 /** Visitor for SyntaxKind.UnionType */
-const unionTypeVisitor = (node: Node, parentName?: string): string =>
+const unionTypeVisitor = (node: Node): string =>
     (node as UnionTypeNode)
         .getTypeNodes()
-        .map((n) => visit(n, parentName))
+        .map((n) => visit(n))
         .join(' | ')
 
 /** Visitor for SyntaxKind.VariableDeclaration */
-const variableVisitor = (node: Node, parentName?: string): string => {
+const variableVisitor = (node: Node): string => {
     const v = node as VariableDeclaration
     const k = v?.getVariableStatement()?.getDeclarationKind()
     const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
-    return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(
-        v.getTypeNodeOrThrow(),
-        parentName,
-    )}`
+    return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(v.getTypeNodeOrThrow())}`
 }
 
 /** Visitor for SyntaxKind.Identifier */
-const identifierVisitor = (node: Node, _parentName?: string, _literalSet?: Set<LiteralToBuild>): string => {
+const identifierVisitor = (node: Node): string => {
     const name = node.getText()
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
 /** Visitor for SyntaxKind.QualifiedName */
-const qualifiedNameVisitor = (node: Node, _parentName?: string, _literalSet?: Set<LiteralToBuild>): string => {
+const qualifiedNameVisitor = (node: Node): string => {
     const name = node.getText()
     return typesMap.has(name) ? typesMap.get(name)! : buildTypeName(name)
 }
 
 /** Visitor for SyntaxKind.TypeReference */
-const typeReferenceVisitor = (node: Node, parentName?: string): string => {
+const typeReferenceVisitor = (node: Node): string => {
     const ref = node as TypeReferenceNode
     const typeName = visit(ref.getTypeName())
     if (ref.getTypeArguments().length) {
         return `${buildTypeName(typeName)}[${ref
             .getTypeArguments()
-            .map((n) => visit(n, parentName))
+            .map((n) => visit(n))
             .join(', ')}]`
     }
     return buildTypeName(typeName)
 }
 
 /** Visitor for SyntaxKind.LiteralType */
-const literalTypeVisitor = (node: Node, parentName?: string): string => {
+const literalTypeVisitor = (node: Node): string => {
     const lit = node as LiteralTypeNode
     const litType = lit.getLiteral()
     if (litType instanceof NullLiteral) {
@@ -198,13 +191,13 @@ const literalTypeVisitor = (node: Node, parentName?: string): string => {
     }
 
     if (litType instanceof LiteralExpression) {
-        return visit(litType, parentName)
+        return visit(litType)
     }
     return 'any'
 }
 
 /** Visitor for SyntaxKind.StringLiteral */
-const stringLiteralVisitor = (node: Node, _parentName?: string): string => {
+const stringLiteralVisitor = (node: Node): string => {
     const n = node as StringLiteral
     const typeName = buildLiteralTypeName(n)
     addTypeToBuild(n, { name: typeName, type: 'string' })
@@ -212,7 +205,7 @@ const stringLiteralVisitor = (node: Node, _parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.NumericalLiteral */
-const numericalLiteralVisitor = (node: Node, _parentName?: string): string => {
+const numericalLiteralVisitor = (node: Node): string => {
     const n = node as NumericLiteral
     const typeName = buildLiteralTypeName(n)
     addTypeToBuild(n, { name: typeName, type: 'int' })
