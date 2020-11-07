@@ -209,9 +209,12 @@ const stringLiteralVisitor = (node: Node): string => {
     return belongsToFunction(n) ? `${typeName}: "${n.getLiteralValue()}"` : typeName
 }
 
-const numericalLiteral = (node: Node): string => {
+/** Visitor for SyntaxKind.NumericalLiteral */
+const numericalLiteralVisitor = (node: Node): string => {
     const n = node as NumericLiteral
     const typeName = buildLiteralTypeName(n)
+    literalsToBuild.add({ val: typeName, type: 'int' })
+    return belongsToFunction(n) ? `${typeName}: ${n.getLiteralValue()}` : typeName
 }
 /** Visitor for SyntaxKind.TypeOfKeyword */
 const typeOfVisitor = (_node: Node): string => 'typeof'
@@ -261,7 +264,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.WhitespaceTrivia, pass], // pass
     [SyntaxKind.ShebangTrivia, pass], // pass
     [SyntaxKind.ConflictMarkerTrivia, pass], // pass
-    [SyntaxKind.NumericLiteral, pass], // TODO check if this needs conversion
+    [SyntaxKind.NumericLiteral, numericalLiteralVisitor],
     [SyntaxKind.BigIntLiteral, pass], // TODO check if this needs conversion
     [SyntaxKind.StringLiteral, stringLiteralVisitor],
     [SyntaxKind.JsxText, pass], // pass
