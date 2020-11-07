@@ -14,6 +14,7 @@ import {
     ParameterDeclaration,
     PropertyDeclaration,
     PropertySignature,
+    SourceFile,
     StringLiteral,
     SyntaxKind,
     TypeAliasDeclaration,
@@ -36,67 +37,63 @@ const typesMap = new Map<string, string>([
 ])
 
 /** Visitor for SyntaxKind.ArrayType */
-const arrayTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
-    visit((node as ArrayTypeNode).getElementTypeNode(), parentName, literalSet)
+const arrayTypeVisitor = (node: Node, parentName?: string): string =>
+    visit((node as ArrayTypeNode).getElementTypeNode(), parentName)
 
 /** Visitor for SyntaxKind.ClassDeclaration */
-const classVisitor = (node: Node, _parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const classVisitor = (node: Node, _parentName?: string): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
 
-    return `type ${name}${buildTypeParams(classs, name, literalSet)}* = ref object
-             ${buildPropS(classs.getProperties(), '\n   ', name, literalSet)}
-             ${buildMethods(classs.getMethods(), name, literalSet)}`
+    return `type ${name}${buildTypeParams(classs, name)}* = ref object
+             ${buildPropS(classs.getProperties(), '\n   ', name)}
+             ${buildMethods(classs.getMethods(), name)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
-const functionVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const functionVisitor = (node: Node, parentName?: string): string => {
     const func = node as FunctionDeclaration
     if (!func.getName()) {
-        return visit(node, parentName, literalSet)
+        return visit(node, parentName)
     }
     const name = buildVarName(func.getName()!)
-    return `proc ${buildVarName(name)}*${buildTypeParams(func, parentName, literalSet)}(${buildParams(
+    return `proc ${buildVarName(name)}*${buildTypeParams(func, parentName)}(${buildParams(
         func,
         parentName,
-        literalSet,
-    )}): ${buildReturnType(func, parentName, literalSet)} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
+    )}): ${buildReturnType(func, parentName)} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
-const functionTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const functionTypeVisitor = (node: Node, parentName?: string): string => {
     const func = node as FunctionTypeNode
-    return `proc${buildTypeParams(func, parentName, literalSet)}(${buildParams(
+    return `proc${buildTypeParams(func, parentName)}(${buildParams(func, parentName)}): ${buildReturnType(
         func,
         parentName,
-        literalSet,
-    )}): ${buildReturnType(func, parentName, literalSet)}`
+    )}`
 }
 
 /** Visitor for SyntaxKind.MethodSignature */
-const methodSignatureVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const methodSignatureVisitor = (node: Node, parentName?: string): string => {
     const method = node as MethodSignature
     const name = buildVarName(method.getName())
-    return `proc ${name}*${buildTypeParams(method, parentName, literalSet)}(self: ${parentName}, ${buildParams(
+    return `proc ${name}*${buildTypeParams(method, parentName)}(self: ${parentName}, ${buildParams(
         method,
-    )}): ${buildReturnType(method, parentName, literalSet)} {.importcpp: """#.${name}(${buildFFiParams(
-        method,
-    )})""", nodecl .}
+    )}): ${buildReturnType(method, parentName)} {.importcpp: """#.${name}(${buildFFiParams(method)})""", nodecl .}
     `
 }
 
 /** Visitor for SyntaxKind.Parameter */
-const parameterVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const parameterVisitor = (node: Node, parentName?: string): string => {
     const param = node as ParameterDeclaration
     const name = buildVarName(param.getName())
-    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow(), parentName, literalSet) : 'any'
+    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow(), parentName) : 'any'
     return param.isRestParameter() ? `${name}: varargs[${paramType}]` : `${name}: ${paramType}`
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
-const propertyVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const propertyVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature | PropertyDeclaration
-    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow(), parentName, literalSet) : 'any'
+    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow(), parentName) : 'any'
     const readonly = prop.isReadonly() ? '## readonly\n' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
@@ -104,27 +101,27 @@ const propertyVisitor = (node: Node, parentName?: string, literalSet?: Set<Liter
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
-const typeAliasVisitor = (node: Node, _parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const typeAliasVisitor = (node: Node, _parentName?: string): string => {
     const alias = node as TypeAliasDeclaration
     const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
     const typeName = buildTypeName(alias.getName())
-    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName, literalSet) : ''
-    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName, literalSet)} = ${ref}${props}`
+    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName) : ''
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName)} = ${ref}${props}`
 }
 
 /** Visitor for SyntaxKind.TypeLiteral */
-const typeLiteralVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    const methods = buildMethodS(n.getMethods(), parentName, literalSet)
+    const methods = buildMethodS(n.getMethods(), parentName)
     // add comma if prop has no parent node.
-    const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName, literalSet)
+    const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName)
     // if typeLiteral has methods and doesn't belong to a parent node (type alias)
     // methods get transformed to procs that belong to the anonymous object.
     if (n.getMethods().length && !parentName) {
         const meths = n
             .getMethods()
             .map((method) => {
-                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method, parentName, literalSet)
+                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method, parentName)
             })
             .join('\n')
 
@@ -135,30 +132,29 @@ const typeLiteralVisitor = (node: Node, parentName?: string, literalSet?: Set<Li
 }
 
 /** Visitor for SyntaxKind.TypeParameter */
-const typeParamVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const typeParamVisitor = (node: Node, parentName?: string): string => {
     const param = node as TypeParameterDeclaration
     const paramName = buildTypeName(param.getName())
     return typeof param.getConstraint() === 'undefined'
         ? `${paramName}`
-        : `${paramName}: ${visit(param.getConstraintOrThrow(), parentName, literalSet)}`
+        : `${paramName}: ${visit(param.getConstraintOrThrow(), parentName)}`
 }
 
 /** Visitor for SyntaxKind.UnionType */
-const unionTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
+const unionTypeVisitor = (node: Node, parentName?: string): string =>
     (node as UnionTypeNode)
         .getTypeNodes()
-        .map((n) => visit(n, parentName, literalSet))
+        .map((n) => visit(n, parentName))
         .join(' | ')
 
 /** Visitor for SyntaxKind.VariableDeclaration */
-const variableVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const variableVisitor = (node: Node, parentName?: string): string => {
     const v = node as VariableDeclaration
     const k = v?.getVariableStatement()?.getDeclarationKind()
     const varKind = k === VariableDeclarationKind.Const ? 'let' : 'var'
     return `${varKind} ${buildVarName(v.getName())}* {.importcpp, nodecl.}: ${visit(
         v.getTypeNodeOrThrow(),
         parentName,
-        literalSet,
     )}`
 }
 
@@ -175,20 +171,20 @@ const qualifiedNameVisitor = (node: Node, _parentName?: string, _literalSet?: Se
 }
 
 /** Visitor for SyntaxKind.TypeReference */
-const typeReferenceVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const typeReferenceVisitor = (node: Node, parentName?: string): string => {
     const ref = node as TypeReferenceNode
     const typeName = visit(ref.getTypeName())
     if (ref.getTypeArguments().length) {
         return `${buildTypeName(typeName)}[${ref
             .getTypeArguments()
-            .map((n) => visit(n, parentName, literalSet))
+            .map((n) => visit(n, parentName))
             .join(', ')}]`
     }
     return buildTypeName(typeName)
 }
 
 /** Visitor for SyntaxKind.LiteralType */
-const literalTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const literalTypeVisitor = (node: Node, parentName?: string): string => {
     const lit = node as LiteralTypeNode
     const litType = lit.getLiteral()
     if (litType instanceof NullLiteral) {
@@ -199,25 +195,39 @@ const literalTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<Li
     }
 
     if (litType instanceof LiteralExpression) {
-        return visit(litType, parentName, literalSet)
+        return visit(litType, parentName)
     }
     return 'any'
 }
 
+const typesToBuildMap = new Map<string, Set<LiteralToBuild>>()
+
+export const initLiteralsMap = (fileNames: SourceFile[]): void => {
+    for (const name of fileNames) {
+        typesToBuildMap.set(name.getFilePath(), new Set())
+    }
+}
+
+export const getTypesToBuild = (file: SourceFile): Set<LiteralToBuild> => typesToBuildMap.get(file.getFilePath())!
+
+export const getFileName = (n: Node): string => n.getSourceFile().getFilePath()
+
+const addTypeToBuild = (n: Node, type: LiteralToBuild): Set<LiteralToBuild> =>
+    typesToBuildMap.get(getFileName(n))!.add(type)
+
 /** Visitor for SyntaxKind.StringLiteral */
-const stringLiteralVisitor = (node: Node, _parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
+const stringLiteralVisitor = (node: Node, _parentName?: string): string => {
     const n = node as StringLiteral
     const typeName = buildLiteralTypeName(n)
-    literalsSet?.add({ name: typeName, type: 'string' })
-    console.log(belongsToFunction(n))
+    addTypeToBuild(n, { name: typeName, type: 'string' })
     return belongsToFunction(n) ? `${typeName}: "${n.getLiteralValue()}"` : typeName
 }
 
 /** Visitor for SyntaxKind.NumericalLiteral */
-const numericalLiteralVisitor = (node: Node, _parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
+const numericalLiteralVisitor = (node: Node, _parentName?: string): string => {
     const n = node as NumericLiteral
     const typeName = buildLiteralTypeName(n)
-    literalsSet?.add({ name: typeName, type: 'int' })
+    addTypeToBuild(n, { name: typeName, type: 'int' })
     return belongsToFunction(n) ? `${typeName}: ${n.getLiteralValue()}` : typeName
 }
 /** Visitor for SyntaxKind.TypeOfKeyword */
@@ -239,15 +249,12 @@ export type LiteralToBuild = {
     name: string
     type: 'string' | 'int'
 }
-type NodeVisitor = (node: Node | TypeNode, parentName?: string, literalsSet?: Set<LiteralToBuild>) => string | DoneEvent
+type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | DoneEvent
 
-export const visit = (node: Node | TypeNode, parentName?: string, literalsSet?: Set<LiteralToBuild>): string => {
-    if (!visitorMap.has(node.getKind())) {
-        console.log('node visitor registered for ' + node.getKind())
-    }
+export const visit = (node: Node | TypeNode, parentName?: string): string => {
     if (visitorMap.has(node.getKind())) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const data = visitorMap.get(node.getKind())!(node, parentName, literalsSet)
+        const data = visitorMap.get(node.getKind())!(node, parentName)
         if (!isDone(data)) {
             return data
         } else {
@@ -728,32 +735,24 @@ const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | string): 
 const buildTypeParams = (
     node: ClassDeclaration | FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
     parentName?: string,
-    literalSet?: Set<LiteralToBuild>,
 ): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
-              .map((p) => visit(p, parentName, literalSet))
+              .map((p) => visit(p, parentName))
               .join(', ')}]`
         : ''
 
 // Builds function parameters for functionLike nodes
-const buildParams = (
-    node: FunctionTypeNode | FunctionDeclaration | MethodSignature,
-    parentName?: string,
-    literalSet?: Set<LiteralToBuild>,
-): string =>
+const buildParams = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature, parentName?: string): string =>
     node
         .getParameters()
-        .map((param) => visit(param, parentName, literalSet))
+        .map((param) => visit(param, parentName))
         .join(', ')
 
 // Builds return type for functionLike nodes
-const buildReturnType = (
-    node: FunctionTypeNode | FunctionDeclaration | MethodSignature,
-    parentName?: string,
-    literalSet?: Set<LiteralToBuild>,
-): string => (node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow(), parentName, literalSet) : 'any')
+const buildReturnType = (node: FunctionTypeNode | FunctionDeclaration | MethodSignature, parentName?: string): string =>
+    node.getReturnTypeNode() ? visit(node.getReturnTypeNodeOrThrow(), parentName) : 'any'
 
 // Builds FFI params for functionLike nodes
 const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSignature): string =>
@@ -763,27 +762,19 @@ const buildFFiParams = (node: FunctionDeclaration | FunctionTypeNode | MethodSig
         .join(', ')
 
 // Builds methods from MethodDeclarations
-const buildMethods = (methods: MethodDeclaration[], parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
-    methods.map((method) => visit(method, parentName, literalSet)).join('\n')
+const buildMethods = (methods: MethodDeclaration[], parentName?: string): string =>
+    methods.map((method) => visit(method, parentName)).join('\n')
 
 // Builds methods from MethodSignatures
-const buildMethodS = (methods: MethodSignature[], parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
-    methods.map((method) => visit(method, parentName, literalSet)).join('\n')
+const buildMethodS = (methods: MethodSignature[], parentName?: string): string =>
+    methods.map((method) => visit(method, parentName)).join('\n')
 
 // Builds properties
-const buildProps = (
-    props: PropertySignature[],
-    separator: string,
-    parentName?: string,
-    literalSet?: Set<LiteralToBuild>,
-): string => props.map((prop) => visit(prop, parentName, literalSet)).join(separator)
+const buildProps = (props: PropertySignature[], separator: string, parentName?: string): string =>
+    props.map((prop) => visit(prop, parentName)).join(separator)
 
-const buildPropS = (
-    props: PropertyDeclaration[],
-    separator: string,
-    parentName?: string,
-    literalSet?: Set<LiteralToBuild>,
-): string => props.map((prop) => visit(prop, parentName, literalSet)).join(separator)
+const buildPropS = (props: PropertyDeclaration[], separator: string, parentName?: string): string =>
+    props.map((prop) => visit(prop, parentName)).join(separator)
 
 // Helper for Literal visitors, if they belong to function like nodes
 const belongsToFunction = (node: StringLiteral | NumericLiteral): boolean => {
