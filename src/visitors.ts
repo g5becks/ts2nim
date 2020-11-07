@@ -200,21 +200,6 @@ const literalTypeVisitor = (node: Node, parentName?: string): string => {
     return 'any'
 }
 
-const typesToBuildMap = new Map<string, Set<LiteralToBuild>>()
-
-export const initLiteralsMap = (fileNames: SourceFile[]): void => {
-    for (const name of fileNames) {
-        typesToBuildMap.set(name.getFilePath(), new Set())
-    }
-}
-
-export const getTypesToBuild = (file: SourceFile): Set<LiteralToBuild> => typesToBuildMap.get(file.getFilePath())!
-
-export const getFileName = (n: Node): string => n.getSourceFile().getFilePath()
-
-const addTypeToBuild = (n: Node, type: LiteralToBuild): Set<LiteralToBuild> =>
-    typesToBuildMap.get(getFileName(n))!.add(type)
-
 /** Visitor for SyntaxKind.StringLiteral */
 const stringLiteralVisitor = (node: Node, _parentName?: string): string => {
     const n = node as StringLiteral
@@ -249,6 +234,34 @@ export type LiteralToBuild = {
     name: string
     type: 'string' | 'int'
 }
+
+// a map from filenames to sets of types the generator function needs to build
+const typesToBuildMap = new Map<string, Set<string>>()
+
+// initializes the typesToBuildMap with the set of file names
+export const initLiteralsMap = (fileNames: SourceFile[]): void => {
+    for (const name of fileNames) {
+        typesToBuildMap.set(name.getFilePath(), new Set())
+    }
+}
+
+// Returns the set of types to build for a given file.
+export const getTypesToBuild = (file: SourceFile): Set<LiteralToBuild> => {
+    const originSet = typesToBuildMap.get(file.getFilePath())!
+    const returnSet = new Set<LiteralToBuild>()
+    for (const type of originSet.values()) {
+        returnSet.add(JSON.parse(type) as LiteralToBuild)
+    }
+    return returnSet
+}
+
+// gets the name of the file for a given node.
+const getFileName = (n: Node): string => n.getSourceFile().getFilePath()
+
+// Adds a type that needs to be build to the typesToBuildMap
+const addTypeToBuild = (n: Node, type: LiteralToBuild): Set<string> =>
+    typesToBuildMap.get(getFileName(n))!.add(JSON.stringify(type))
+
 type NodeVisitor = (node: Node | TypeNode, parentName?: string) => string | DoneEvent
 
 export const visit = (node: Node | TypeNode, parentName?: string): string => {

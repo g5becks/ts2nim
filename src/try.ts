@@ -4,8 +4,8 @@ import { generate } from './index'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
-const file = proj.getSourceFiles()[0]
+const files = proj.getSourceFiles()
 
-const data = generate(file)
+const data = generate(files)
 
-fs.writeFileSync('data.nim', Buffer.from(data, 'utf-8'))
+fs.writeFileSync('data.nim', Buffer.from(data[0].source, 'utf-8'))
