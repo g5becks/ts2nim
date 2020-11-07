@@ -36,17 +36,17 @@ const typesMap = new Map<string, string>([
 ])
 
 /** Visitor for SyntaxKind.ArrayType */
-const arrayTypeVisitor = (node: Node, parentName?: string, _literalSet?: Set<LiteralToBuild>): string =>
-    visit((node as ArrayTypeNode).getElementTypeNode(), parentName)
+const arrayTypeVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string =>
+    visit((node as ArrayTypeNode).getElementTypeNode(), parentName, literalSet)
 
 /** Visitor for SyntaxKind.ClassDeclaration */
-const classVisitor = (node: Node, _parentName?: string, _literalSet?: Set<LiteralToBuild>): string => {
+const classVisitor = (node: Node, _parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
 
-    return `type ${name}${buildTypeParams(classs)}* = ref object
-             ${buildPropS(classs.getProperties(), '\n   ', name)}
-             ${buildMethods(classs.getMethods(), name)}`
+    return `type ${name}${buildTypeParams(classs, name, literalSet)}* = ref object
+             ${buildPropS(classs.getProperties(), '\n   ', name, literalSet)}
+             ${buildMethods(classs.getMethods(), name, literalSet)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -717,11 +717,12 @@ const buildTypeName = (node: ClassDeclaration | TypeAliasDeclaration | string): 
 const buildTypeParams = (
     node: ClassDeclaration | FunctionDeclaration | FunctionTypeNode | MethodSignature | TypeAliasDeclaration,
     parentName?: string,
+    literalSet?: Set<LiteralToBuild>,
 ): string =>
     node.getTypeParameters().length
         ? `[${node
               .getTypeParameters()
-              .map((p) => visit(p, parentName))
+              .map((p) => visit(p, parentName, literalSet))
               .join(', ')}]`
         : ''
 
