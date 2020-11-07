@@ -45,9 +45,9 @@ const classVisitor = (node: Node, _parentName?: string): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
 
-    return `type ${name}${buildTypeParams(classs, name)}* = ref object
-             ${buildPropS(classs.getProperties(), '\n   ', name)}
-             ${buildMethods(classs.getMethods(), name)}`
+    return `type ${name}${buildTypeParams(classs, name)}* {.access.} = ref object
+    ${buildPropS(classs.getProperties(), name)}
+    ${buildMethods(classs.getMethods(), name)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
@@ -94,10 +94,12 @@ const parameterVisitor = (node: Node, parentName?: string): string => {
 const propertyVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature | PropertyDeclaration
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow(), parentName) : 'any'
-    const readonly = prop.isReadonly() ? '## readonly\n' : ''
+    const readonly = prop.isReadonly() ? '{.readonly.}' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
-    return `${parentName ? '   ' : ''}${readonly}${buildVarName(prop.getName())}: ${propType} ${parentName ? '\n' : ''}`
+    return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}* ${parentName ? readonly : ''}: ${propType} ${
+        parentName ? '\n' : ', '
+    }`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
@@ -787,8 +789,8 @@ const buildMethodS = (methods: MethodSignature[], parentName?: string): string =
 const buildProps = (props: PropertySignature[], separator: string, parentName?: string): string =>
     props.map((prop) => visit(prop, parentName)).join(separator)
 
-const buildPropS = (props: PropertyDeclaration[], separator: string, parentName?: string): string =>
-    props.map((prop) => visit(prop, parentName)).join(separator)
+const buildPropS = (props: PropertyDeclaration[], parentName?: string): string =>
+    props.map((prop) => visit(prop, parentName)).join('\n')
 
 // Helper for Literal visitors, if they belong to function like nodes
 const belongsToFunction = (node: StringLiteral | NumericLiteral): boolean =>
