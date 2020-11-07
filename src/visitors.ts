@@ -45,9 +45,10 @@ const classVisitor = (node: Node, _parentName?: string): string => {
     const classs = node as ClassDeclaration
     const name = buildTypeName(classs)
 
-    return `type ${name}${buildTypeParams(classs, name)}* {.access.} = ref object
-    ${buildPropS(classs.getProperties(), name)}
-    ${buildMethods(classs.getMethods(), name)}`
+    return `type ${name}${buildTypeParams(classs, name)}* {.access.} = ref object\n${buildPropS(
+        classs.getProperties(),
+        name,
+    )}\n${buildMethods(classs.getMethods(), name)}`
 }
 
 /** Visitor for SyntaxKind.FunctionDeclaration */
