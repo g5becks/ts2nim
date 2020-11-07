@@ -205,7 +205,7 @@ const stringLiteralVisitor = (node: Node, _parentName?: string): string => {
     const n = node as StringLiteral
     const typeName = buildLiteralTypeName(n)
     addTypeToBuild(n, { name: typeName, type: 'string' })
-    return belongsToFunction(n) ? `${typeName}: "${n.getLiteralValue()}"` : typeName
+    return belongsToFunction(n) ? `${typeName}: = "${n.getLiteralValue()}"` : typeName
 }
 
 /** Visitor for SyntaxKind.NumericalLiteral */
@@ -214,7 +214,7 @@ const numericalLiteralVisitor = (node: Node, _parentName?: string): string => {
     const typeName = buildLiteralTypeName(n)
     addTypeToBuild(n, { name: typeName, type: 'int' })
     console.log(belongsToFunction(n))
-    return belongsToFunction(n) ? `${typeName}: ${n.getLiteralValue()}` : typeName
+    return belongsToFunction(n) ? `${typeName}: = ${n.getLiteralValue()}` : typeName
 }
 /** Visitor for SyntaxKind.TypeOfKeyword */
 const typeOfVisitor = (_node: Node): string => 'typeof'
