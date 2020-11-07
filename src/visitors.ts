@@ -94,9 +94,9 @@ const propertyVisitor = (node: Node, parentName?: string): string => {
     const readonly = prop.isReadonly() ? '{.readonly.}' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
-    return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}* ${parentName ? readonly : ''}: ${propType} ${
-        parentName ? '\n' : ', '
-    }`
+    return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}${parentName ? '*' : ''} ${
+        parentName ? readonly : ''
+    }: ${propType} ${parentName ? '\n' : ', '}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
@@ -111,7 +111,7 @@ const typeAliasVisitor = (node: Node): string => {
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string): string => {
     const n = node as TypeLiteralNode
-    const methods = buildMethodS(n.getMethods())
+    const methods = buildMethodS(n.getMethods(), parentName)
     // add comma if prop has no parent node.
     const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName)
     // if typeLiteral has methods and doesn't belong to a parent node (type alias)
@@ -209,7 +209,6 @@ const numericalLiteralVisitor = (node: Node): string => {
     const n = node as NumericLiteral
     const typeName = buildLiteralTypeName(n)
     addTypeToBuild(n, { name: typeName, type: 'int' })
-    console.log(belongsToFunction(n))
     return typeName
 }
 /** Visitor for SyntaxKind.TypeOfKeyword */
