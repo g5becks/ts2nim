@@ -115,16 +115,16 @@ const typeAliasVisitor = (node: Node, _parentName?: string, literalSet?: Set<Lit
 /** Visitor for SyntaxKind.TypeLiteral */
 const typeLiteralVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const n = node as TypeLiteralNode
-    const methods = buildMethodS(n.getMethods())
+    const methods = buildMethodS(n.getMethods(), parentName, literalSet)
     // add comma if prop has no parent node.
-    const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName)
+    const properties = buildProps(n.getProperties(), parentName ? '' : ', ', parentName, literalSet)
     // if typeLiteral has methods and doesn't belong to a parent node (type alias)
     // methods get transformed to procs that belong to the anonymous object.
     if (n.getMethods().length && !parentName) {
         const meths = n
             .getMethods()
             .map((method) => {
-                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method)
+                return buildVarName(method.getName()) + ': ' + functionTypeVisitor(method, parentName, literalSet)
             })
             .join('\n')
 
