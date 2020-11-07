@@ -4,15 +4,16 @@ import {
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
-    LiteralExpression,
     LiteralTypeNode,
     MethodDeclaration,
     MethodSignature,
     Node,
     NullLiteral,
+    NumericLiteral,
     ParameterDeclaration,
     PropertyDeclaration,
     PropertySignature,
+    StringLiteral,
     SyntaxKind,
     TypeAliasDeclaration,
     TypeLiteralNode,
@@ -174,7 +175,11 @@ const typeReferenceVisitor = (node: Node): string => {
     return buildTypeName(typeName)
 }
 
-// const literalsToBuild = new Set<string>()
+type LiteralToBuild = {
+    val: string
+    type: 'string' | 'int'
+}
+const literalsToBuild = new Set<LiteralToBuild>()
 /** Visitor for SyntaxKind.LiteralType */
 const literalTypeVisitor = (node: Node): string => {
     const lit = node as LiteralTypeNode
@@ -186,13 +191,25 @@ const literalTypeVisitor = (node: Node): string => {
         return litType.getLiteralValue() ? '`true`' : '`false`'
     }
 
-    if (litType instanceof LiteralExpression) {
-        return litType.
-    }
-
     return 'any'
 }
 
+// Helper for Literal visitors, if they belong to function like nodes
+const belongsToFunction = (node: StringLiteral | NumericLiteral): boolean => {
+    return Boolean(
+        node.getFirstAncestorByKind(SyntaxKind.FunctionDeclaration) ||
+            node.getFirstAncestorByKind(SyntaxKind.FunctionType) ||
+            node.getFirstAncestorByKind(SyntaxKind.FunctionExpression) ||
+            node.getFirstAncestorByKind(SyntaxKind.Constructor) ||
+            node.getFirstAncestorByKind(SyntaxKind.ConstructorType),
+    )
+}
+const stringLiteralVisitor = (node: Node): string => {
+    const n = node as StringLiteral
+    const typeName = `\`${n.getLiteralValue()}\``
+    literalsToBuild.add({ val: typeName, type: 'string' })
+    return belongsToFunction(n) ? `${typeName}: "${n.getLiteralValue()}"` : typeName
+}
 /** Visitor for SyntaxKind.TypeOfKeyword */
 const typeOfVisitor = (_node: Node): string => 'typeof'
 
@@ -232,7 +249,7 @@ const pass = (_node: Node | TypeNode) => {
     return ''
 }
 
-const visitorMap = new Map<number, NodeVisitor>([
+const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.Unknown, pass],
     [SyntaxKind.EndOfFileToken, (_node: Node): DoneEvent => ({ message: 'Done' })],
     [SyntaxKind.SingleLineCommentTrivia, pass], // pass
@@ -243,7 +260,7 @@ const visitorMap = new Map<number, NodeVisitor>([
     [SyntaxKind.ConflictMarkerTrivia, pass], // pass
     [SyntaxKind.NumericLiteral, pass], // TODO check if this needs conversion
     [SyntaxKind.BigIntLiteral, pass], // TODO check if this needs conversion
-    [SyntaxKind.StringLiteral, pass], // TODO check if this needs conversion
+    [SyntaxKind.StringLiteral, stringLiteralVisitor],
     [SyntaxKind.JsxText, pass], // pass
     [SyntaxKind.JsxTextAllWhiteSpaces, pass], // pass
     [SyntaxKind.RegularExpressionLiteral, pass], // pass
