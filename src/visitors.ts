@@ -89,14 +89,14 @@ const methodSignatureVisitor = (node: Node, parentName?: string, literalSet?: Se
 const parameterVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const param = node as ParameterDeclaration
     const name = buildVarName(param.getName())
-    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow()) : 'any'
+    const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow(), parentName, literalSet) : 'any'
     return param.isRestParameter() ? `${name}: varargs[${paramType}]` : `${name}: ${paramType}`
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
 const propertyVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const prop = node as PropertySignature | PropertyDeclaration
-    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
+    const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow(), parentName, literalSet) : 'any'
     const readonly = prop.isReadonly() ? '## readonly\n' : ''
     // if property belongs to a parent node (type alias), insert space and
     // add each one on a new line
@@ -104,12 +104,12 @@ const propertyVisitor = (node: Node, parentName?: string, literalSet?: Set<Liter
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
-const typeAliasVisitor = (node: Node, parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
+const typeAliasVisitor = (node: Node, _parentName?: string, literalSet?: Set<LiteralToBuild>): string => {
     const alias = node as TypeAliasDeclaration
     const ref = alias.getTypeNode()?.getKind() === SyntaxKind.TypeLiteral ? 'ref object\n' : ''
     const typeName = buildTypeName(alias.getName())
-    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName) : ''
-    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName)} = ${ref}${props}`
+    const props = alias.getTypeNode() ? visit(alias.getTypeNodeOrThrow(), typeName, literalSet) : ''
+    return `type ${buildTypeName(alias)}*${buildTypeParams(alias, typeName, literalSet)} = ${ref}${props}`
 }
 
 /** Visitor for SyntaxKind.TypeLiteral */
