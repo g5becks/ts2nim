@@ -4,6 +4,7 @@ import {
     ClassDeclaration,
     FunctionDeclaration,
     FunctionTypeNode,
+    LiteralExpression,
     LiteralTypeNode,
     MethodDeclaration,
     MethodSignature,
@@ -175,10 +176,13 @@ const typeReferenceVisitor = (node: Node): string => {
     return buildTypeName(typeName)
 }
 
+// a type that needs to be created in nim to emulate typescript literal types.
 type LiteralToBuild = {
     val: string
     type: 'string' | 'int'
 }
+
+// Holds a set of literal types that need to be built for each file
 const literalsToBuild = new Set<LiteralToBuild>()
 /** Visitor for SyntaxKind.LiteralType */
 const literalTypeVisitor = (node: Node): string => {
@@ -191,24 +195,23 @@ const literalTypeVisitor = (node: Node): string => {
         return litType.getLiteralValue() ? '`true`' : '`false`'
     }
 
+    if (litType instanceof LiteralExpression) {
+        return visit(litType)
+    }
     return 'any'
 }
 
-// Helper for Literal visitors, if they belong to function like nodes
-const belongsToFunction = (node: StringLiteral | NumericLiteral): boolean => {
-    return Boolean(
-        node.getFirstAncestorByKind(SyntaxKind.FunctionDeclaration) ||
-            node.getFirstAncestorByKind(SyntaxKind.FunctionType) ||
-            node.getFirstAncestorByKind(SyntaxKind.FunctionExpression) ||
-            node.getFirstAncestorByKind(SyntaxKind.Constructor) ||
-            node.getFirstAncestorByKind(SyntaxKind.ConstructorType),
-    )
-}
+/** Visitor for SyntaxKind.StringLiteral */
 const stringLiteralVisitor = (node: Node): string => {
     const n = node as StringLiteral
-    const typeName = `\`${n.getLiteralValue()}\``
+    const typeName = buildLiteralTypeName(n)
     literalsToBuild.add({ val: typeName, type: 'string' })
     return belongsToFunction(n) ? `${typeName}: "${n.getLiteralValue()}"` : typeName
+}
+
+const numericalLiteral = (node: Node): string => {
+    const n = node as NumericLiteral
+    const typeName = buildLiteralTypeName(n)
 }
 /** Visitor for SyntaxKind.TypeOfKeyword */
 const typeOfVisitor = (_node: Node): string => 'typeof'
@@ -753,3 +756,19 @@ const buildProps = (props: PropertySignature[], separator: string, parentName?: 
 
 const buildPropS = (props: PropertyDeclaration[], separator: string, parentName?: string): string =>
     props.map((prop) => visit(prop, parentName)).join(separator)
+
+// Helper for Literal visitors, if they belong to function like nodes
+const belongsToFunction = (node: StringLiteral | NumericLiteral): boolean => {
+    return Boolean(
+        node.getFirstAncestorByKind(SyntaxKind.FunctionDeclaration) ||
+            node.getFirstAncestorByKind(SyntaxKind.FunctionType) ||
+            node.getFirstAncestorByKind(SyntaxKind.FunctionExpression) ||
+            node.getFirstAncestorByKind(SyntaxKind.Constructor) ||
+            node.getFirstAncestorByKind(SyntaxKind.ConstructorType),
+    )
+}
+
+// helper function to build the type name for literal types to build.
+const buildLiteralTypeName = (lit: StringLiteral | NumericLiteral): string => {
+    return `\`${lit.getLiteralValue()}\``
+}

@@ -1,4 +1,12 @@
-import { LiteralTypeNode, NumericLiteral, Project, StringLiteral, SyntaxKind, UnionTypeNode } from 'ts-morph'
+import {
+    LiteralExpression,
+    LiteralTypeNode,
+    NumericLiteral,
+    Project,
+    StringLiteral,
+    SyntaxKind,
+    UnionTypeNode,
+} from 'ts-morph'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
@@ -30,6 +38,7 @@ types.forEach((t) => {
     const n = t as LiteralTypeNode
 
     const lit = n.getLiteral()
+    console.log(lit instanceof LiteralExpression)
 
     console.log(belongsToFunction(lit as StringLiteral))
 })
