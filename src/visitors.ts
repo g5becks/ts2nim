@@ -56,9 +56,11 @@ const functionVisitor = (node: Node, parentName?: string, literalSet?: Set<Liter
         return visit(node, parentName, literalSet)
     }
     const name = buildVarName(func.getName()!)
-    return `proc ${buildVarName(name)}*${buildTypeParams(func)}(${buildParams(func)}): ${buildReturnType(
+    return `proc ${buildVarName(name)}*${buildTypeParams(func, parentName, literalSet)}(${buildParams(
         func,
-    )} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
+        parentName,
+        literalSet,
+    )}): ${buildReturnType(func, parentName, literalSet)} {.importcpp:"${name}(${buildFFiParams(func)})", nodecl.}`
 }
 
 /** Visitor for SyntaxKind.FunctionType */
