@@ -92,11 +92,11 @@ const propertyVisitor = (node: Node, parentName?: string): string => {
     const prop = node as PropertySignature | PropertyDeclaration
     const propType = prop.getTypeNode() ? visit(prop.getTypeNodeOrThrow()) : 'any'
     const readonly = prop.isReadonly() ? '{.readonly.}' : ''
-    // if property belongs to a parent node (type alias), insert space and
+    // if property belongs to a parent node (type alias), insert space, make public,  and
     // add each one on a new line
     return `${parentName ? '   ' : ''}${buildVarName(prop.getName())}${parentName ? '*' : ''} ${
         parentName ? readonly : ''
-    }: ${propType} ${parentName ? '\n' : ', '}`
+    }: ${propType} ${parentName ? '\n' : ''}`
 }
 
 /** Visitor for SyntaxKind.TypeAliasDeclaration */
@@ -211,8 +211,12 @@ const numericalLiteralVisitor = (node: Node): string => {
     addTypeToBuild(n, { name: typeName, type: 'int' })
     return typeName
 }
-/** Visitor for SyntaxKind.TypeOfKeyword */
-const typeOfVisitor = (_node: Node): string => 'typeof'
+
+const typeQueryVisitor = (node: Node): string =>
+    node
+        .getChildren()
+        .map((n) => visit(n))
+        .join(' ')
 
 const emitter = new events.EventEmitter()
 emitter.addListener('Done', () => {
@@ -392,8 +396,8 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.ThrowKeyword, pass], // pass
     [SyntaxKind.TrueKeyword, pass], // pass
     [SyntaxKind.TryKeyword, pass], // pass
-    [SyntaxKind.TypeOfKeyword, typeOfVisitor],
-    [SyntaxKind.VarKeyword, pass], // pass
+    [SyntaxKind.TypeOfKeyword, (_node: Node) => 'typeof'],
+    [SyntaxKind.VarKeyword, (_node: Node) => 'var'], // pass
     [SyntaxKind.VoidKeyword, (_node: Node) => 'void'], // pass
     [SyntaxKind.WhileKeyword, pass], // pass
     [SyntaxKind.WithKeyword, pass], // pass
@@ -456,7 +460,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.TypeReference, typeReferenceVisitor], // TODO create visitor
     [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
-    [SyntaxKind.TypeQuery, pass], // TODO create visitor
+    [SyntaxKind.TypeQuery, typeQueryVisitor], // TODO create visitor
     [SyntaxKind.TypeLiteral, typeLiteralVisitor],
     [SyntaxKind.ArrayType, arrayTypeVisitor],
     [SyntaxKind.TupleType, pass], // TODO create visitor
@@ -489,7 +493,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.FunctionExpression, pass], // pass
     [SyntaxKind.ArrowFunction, pass], // pass
     [SyntaxKind.DeleteExpression, pass], // pass
-    [SyntaxKind.TypeOfExpression, pass], // pass
+    [SyntaxKind.TypeOfExpression, (_node: Node) => 'typeof'], // pass
     [SyntaxKind.VoidExpression, pass], // pass
     [SyntaxKind.AwaitExpression, pass], // pass
     [SyntaxKind.PrefixUnaryExpression, pass], // pass
