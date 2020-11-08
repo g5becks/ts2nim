@@ -164,7 +164,7 @@ class REPLServer extends Interface {
      *
      * @since v9.0.0
      */
-    clearBufferedCommand(): void
+    private clearBufferedCommand(): void
 
     /**
      * Initializes a history log file for the REPL instance. When executing the
@@ -174,7 +174,7 @@ class REPLServer extends Interface {
      * with REPL instances programmatically.
      * @param path The path to the history file
      */
-    setupHistory(path: string, cb: (err: Error | null, repl: this) => void): void
+    protected setupHistory(path: string, cb: (err: Error | null, repl: this) => void): void
 
     /**
      * events.EventEmitter

@@ -11,8 +11,6 @@ export const generate = (files: SourceFile[]): { out: string; source: string }[]
             .forEachChildAsArray()
             .map((child) => visit(child))
             .join('\n')
-
-        console.log(getTypesToBuild(file).values())
         for (const type of getTypesToBuild(file).values()) {
             source = source.concat(`type ${type.name} = ${type.type}\n`)
         }

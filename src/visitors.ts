@@ -79,6 +79,15 @@ const methodSignatureVisitor = (node: Node, parentName?: string): string => {
     `
 }
 
+/** Visitor for SyntaxKind.MethodDeclaration */
+const methodDeclarationVisitor = (node: Node): string => {
+    const method = node as MethodDeclaration
+    if (isNotPublic(method)) {
+        return ''
+    }
+    return methodSignatureVisitor((method as Node) as MethodSignature)
+}
+
 /** Visitor for SyntaxKind.Parameter */
 const parameterVisitor = (node: Node): string => {
     const param = node as ParameterDeclaration
@@ -212,6 +221,7 @@ const numericalLiteralVisitor = (node: Node): string => {
     return typeName
 }
 
+/** Visitor for SyntaxKind.TypeQuery */
 const typeQueryVisitor = (node: Node): string =>
     node
         .getChildren()
@@ -449,7 +459,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.PropertySignature, propertyVisitor],
     [SyntaxKind.PropertyDeclaration, propertyVisitor],
     [SyntaxKind.MethodSignature, methodSignatureVisitor],
-    [SyntaxKind.MethodDeclaration, methodSignatureVisitor], // TODO create visitor
+    [SyntaxKind.MethodDeclaration, methodDeclarationVisitor],
     [SyntaxKind.Constructor, pass], // TODO create visitor
     [SyntaxKind.GetAccessor, pass], // TODO create visitor
     [SyntaxKind.SetAccessor, pass], // TODO create visitor
@@ -457,7 +467,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.ConstructSignature, pass], // TODO create visitor
     [SyntaxKind.IndexSignature, pass], // TODO create visitor
     [SyntaxKind.TypePredicate, pass], // TODO create visitor
-    [SyntaxKind.TypeReference, typeReferenceVisitor], // TODO create visitor
+    [SyntaxKind.TypeReference, typeReferenceVisitor],
     [SyntaxKind.FunctionType, functionTypeVisitor],
     [SyntaxKind.ConstructorType, pass], // TODO create visitor
     [SyntaxKind.TypeQuery, typeQueryVisitor], // TODO create visitor
@@ -533,10 +543,10 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.DebuggerStatement, pass], // pass
     [SyntaxKind.VariableDeclaration, variableVisitor], // pass
     [SyntaxKind.VariableDeclarationList, pass], // TODO create visitor
-    [SyntaxKind.FunctionDeclaration, functionVisitor], // TODO create visitor
-    [SyntaxKind.ClassDeclaration, classVisitor], // TODO create visitor
+    [SyntaxKind.FunctionDeclaration, functionVisitor],
+    [SyntaxKind.ClassDeclaration, classVisitor],
     [SyntaxKind.InterfaceDeclaration, pass], // TODO create visitor
-    [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor], // TODO create visitor
+    [SyntaxKind.TypeAliasDeclaration, typeAliasVisitor],
     [SyntaxKind.EnumDeclaration, pass], // TODO create visitor
     [SyntaxKind.ModuleDeclaration, pass], // TODO create visitor
     [SyntaxKind.ModuleBlock, pass], // TODO create visitor
@@ -791,3 +801,9 @@ const buildPropS = (props: PropertyDeclaration[], parentName?: string): string =
 
 // helper function to build the type name for literal types to build.
 const buildLiteralTypeName = (lit: StringLiteral | NumericLiteral): string => `\`${lit.getLiteralValue()}\``
+
+// determines if the method is private or protected, in which case it won't be generated
+const isNotPublic = (method: MethodDeclaration): boolean =>
+    method
+        .getModifiers()
+        .some((mod) => mod.getKind() === SyntaxKind.PrivateKeyword || mod.getKind() === SyntaxKind.ProtectedKeyword)
