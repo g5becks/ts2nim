@@ -80,12 +80,12 @@ const methodSignatureVisitor = (node: Node, parentName?: string): string => {
 }
 
 /** Visitor for SyntaxKind.MethodDeclaration */
-const methodDeclarationVisitor = (node: Node): string => {
+const methodDeclarationVisitor = (node: Node, parentName?: string): string => {
     const method = node as MethodDeclaration
     if (isNotPublic(method)) {
         return ''
     }
-    return methodSignatureVisitor((method as Node) as MethodSignature)
+    return methodSignatureVisitor((method as Node) as MethodSignature, parentName)
 }
 
 /** Visitor for SyntaxKind.Parameter */

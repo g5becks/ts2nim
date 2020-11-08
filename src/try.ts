@@ -1,9 +1,11 @@
 import { Project } from 'ts-morph'
+import * as fs from 'fs'
+import { generate } from './index'
 
 const proj = new Project({ tsConfigFilePath: 'tsconfig.scratch.json' })
 
 const files = proj.getSourceFiles()
 
-const classs = files[0].getClass('REPLServer')
+const data = generate(files)
 
-console.log(classs?.getMethods().map((m) => m.getModifiers().map((m) => m.getKind())))
+fs.writeFileSync('data.nim', Buffer.from(data[0].source, 'utf-8'))

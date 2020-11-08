@@ -2,26 +2,6 @@ import { AsyncCompleter, Completer, Interface } from 'readline'
 import { Context } from 'vm'
 import { REPL_MODE_SLOPPY, REPL_MODE_STRICT, REPLCommand, REPLCommandAction, REPLEval, REPLWriter } from 'repl'
 
-declare function of<T extends { name: string }>(...items: T[]): T[]
-type SomePerson = {
-    name: string
-    age: number
-}
-type SomeUnion = string | number | boolean | null | undefined | Record<string, unknown> | { name: string; age: number }
-
-type SomeFunc = (name: string) => string
-type SomeType<
-    T extends {
-        getName(name: string): string
-    }
-> = {
-    val: T
-    getMe: (name: string) => string
-    getNames(name: string): string
-}
-
-declare function someFunc(): string
-
 class REPLServer extends Interface {
     /**
      * The `vm.Context` provided to the `eval` function to be used for JavaScript
@@ -164,7 +144,7 @@ class REPLServer extends Interface {
      *
      * @since v9.0.0
      */
-    private clearBufferedCommand(): void
+    clearBufferedCommand(): void
 
     /**
      * Initializes a history log file for the REPL instance. When executing the
@@ -174,7 +154,7 @@ class REPLServer extends Interface {
      * with REPL instances programmatically.
      * @param path The path to the history file
      */
-    protected setupHistory(path: string, cb: (err: Error | null, repl: this) => void): void
+    setupHistory(path: string, cb: (err: Error | null, repl: this) => void): void
 
     /**
      * events.EventEmitter
