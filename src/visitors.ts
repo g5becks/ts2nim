@@ -93,7 +93,9 @@ const parameterVisitor = (node: Node): string => {
     const param = node as ParameterDeclaration
     const name = buildVarName(param.getName())
     const paramType = param.getTypeNode() ? visit(param.getTypeNodeOrThrow()) : 'any'
-    return param.isRestParameter() ? `${name}: varargs[${paramType}]` : `${name}: ${paramType}`
+    return param.isRestParameter()
+        ? `${name}: varargs[${paramType}]`
+        : `${name}: ${paramType}${param.isOptional() ? ' | undefined = jsUndefined' : ''}`
 }
 
 /** Visitor for SyntaxKind.PropertySignature */
