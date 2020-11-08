@@ -400,7 +400,7 @@ const visitorMap = new Map<SyntaxKind, NodeVisitor>([
     [SyntaxKind.InKeyword, pass], // pass
     [SyntaxKind.InstanceOfKeyword, pass], // pass
     [SyntaxKind.NewKeyword, pass], // pass
-    [SyntaxKind.NullKeyword, pass], // pass
+    [SyntaxKind.NullKeyword, (_node: Node) => 'null'],
     [SyntaxKind.ReturnKeyword, pass], // pass
     [SyntaxKind.SuperKeyword, pass], // pass
     [SyntaxKind.SwitchKeyword, pass], // pass
